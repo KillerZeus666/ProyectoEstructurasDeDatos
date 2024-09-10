@@ -34,7 +34,7 @@
     
     //Método para imprimir la cara
     void Cara::imprimirCara(){
-        std::cout << "Cara [índice: " << indiceCar << ", cantidad de vértices: " << cantidadVerticesCar << "]\n";
+        std::cout << "Cara [indice: " << indiceCar << ", cantidad de vertices: " << cantidadVerticesCar << "]\n";
         for (Arista& arista : listaAristas) {
             arista.imprimirArista();
         }

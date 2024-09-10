@@ -40,7 +40,7 @@
     }
     
     void Vertice::imprimirVertice() {
-        std::cout<<"Vértice [índice: " << indiceVer << ", x: " << x << ", y: " << y << ", z: " << z << "]"<<std::endl;
+        std::cout<<"Vertice [indice: " << indiceVer << ", x: " << x << ", y: " << y << ", z: " << z << "]"<<std::endl;
     } 
     
     

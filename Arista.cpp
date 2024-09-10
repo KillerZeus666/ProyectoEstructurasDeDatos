@@ -34,8 +34,8 @@
     
     //Método para imprimir la arista
     void Arista::imprimirArista() {
-        std::cout << "Arista [índice: " << indiceAr << "]\n";
-        std::cout << "Vértices:\n";
+        std::cout << "Arista [indice: " << indiceAr << "]\n";
+        std::cout << "Vertices:\n";
     
         for (Vertice& vertice : listaVertices) {
             vertice.imprimirVertice();
