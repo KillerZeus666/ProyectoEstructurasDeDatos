@@ -1016,9 +1016,7 @@ void v_cercano(int px, int py, int pz) {
                 std::list<Vertice> vertices = itArista->obtenerListaVertices(); // No usar const aquí
                 for (std::list<Vertice>::iterator itVertice = vertices.begin(); itVertice != vertices.end(); itVertice++) {
                     // Calcular la distancia euclidiana entre el punto dado y el vértice actual
-                    double distancia = sqrt(pow(px - itVertice->obtenerX(), 2) +
-                                            pow(py - itVertice->obtenerY(), 2) +
-                                            pow(pz - itVertice->obtenerZ(), 2));
+                    double distancia = sqrt(pow(px - itVertice->obtenerX(), 2) + pow(py - itVertice->obtenerY(), 2) + pow(pz - itVertice->obtenerZ(), 2));
                     // Si se encuentra una distancia menor a la mínima registrada, se actualiza
                     if (distancia < minDistancia) {
                         minDistancia = distancia;
@@ -1032,10 +1030,8 @@ void v_cercano(int px, int py, int pz) {
 
     // Mostrar el resultado
     if (minDistancia < std::numeric_limits<double>::max()) {
-        std::cout << "El vertice " << verticeCercano.obtenerIndiceVer() << " ("
-                  << verticeCercano.obtenerX() << ", " << verticeCercano.obtenerY() << ", "
-                  << verticeCercano.obtenerZ() << ") del objeto " << objetoCercano
-                  << " es el más cercano al punto (" << px << ", " << py << ", " << pz
+        std::cout << "El vertice " << verticeCercano.obtenerIndiceVer() << " ("<< verticeCercano.obtenerX() << ", " << verticeCercano.obtenerY() << ", "
+                  << verticeCercano.obtenerZ() << ") del objeto " << objetoCercano << " es el más cercano al punto (" << px << ", " << py << ", " << pz
                   << "), a una distancia de: " << minDistancia << std::endl;
     } else {
         std::cerr << "No se encontraron vértices en los objetos cargados." << std::endl;
@@ -1073,9 +1069,7 @@ void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCIO
         for (std::list<Cara>::iterator itCara = obj->obtenerCaras().begin(); itCara != obj->obtenerCaras().end(); itCara++) {
             for (std::list<Arista>::iterator itArista = itCara->obtenerListaAristas().begin(); itArista != itCara->obtenerListaAristas().end(); itArista++) {
                 for (std::list<Vertice>::iterator itVertice = itArista->obtenerListaVertices().begin(); itVertice != itArista->obtenerListaVertices().end(); itVertice++) {
-                    double distancia = sqrt(pow(esquina.obtenerX() - itVertice->obtenerX(), 2) +
-                                            pow(esquina.obtenerY() - itVertice->obtenerY(), 2) +
-                                            pow(esquina.obtenerZ() - itVertice->obtenerZ(), 2));
+                    double distancia = sqrt(pow(esquina.obtenerX() - itVertice->obtenerX(), 2) + pow(esquina.obtenerY() - itVertice->obtenerY(), 2) + pow(esquina.obtenerZ() - itVertice->obtenerZ(), 2));
                     if (distancia < minDistancia) {
                         minDistancia = distancia;
                         verticeCercano = *itVertice;
