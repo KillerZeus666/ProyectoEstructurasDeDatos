@@ -8,6 +8,7 @@
   #include <string>
   #include <limits>
   #include <vector>
+  #include <cmath>
   #include "Objeto.h" // TAD objeto
 
   ///////////////////////////////////////////////COMPONENTE 1////////////////////////////////////////// 
@@ -59,23 +60,15 @@
 std::list<Objeto> objetosPrograma;
 
   int main() {
-      //LISTA DE OBJETOS QUE ADMINISTRA EL SISTEMA
-      
-    try{
-      std::cout << "    ________________________________________________________________________________" << std::endl;
-      std::cout << "    |                        Bienvenid@ a nuestro proyecto                         |" << std::endl;
-        
-      //Variable del comando como tal empleado por el usuario
-      std::string comandoUsuario;
-      /*Se emplea vector para guardar los argumentos ingresados por el usuario
-      //y se utiliza una variable para ir guardando los argumentos en el vector
-      //uno por uno*/
-        
-      std::vector<std::string> argumentosUsuario; 
-      std::string argumento;
+    try {
+        std::cout << "    ________________________________________________________________________________" << std::endl;
+        std::cout << "    |                        Bienvenid@ a nuestro proyecto                         |" << std::endl;
 
-      //Bucle para que se le pida constantemente comandos al usuario
-      while (true) {
+        std::string comandoUsuario;
+        std::vector<std::string> argumentosUsuario; 
+        std::string argumento;
+
+        while (true) {
             std::cout << "    ________________________________________________________________________________"<<std::endl;
             std::cout << "    |                                                                              |" << std::endl;
             std::cout << "    |     Por favor, ingrese el comando ayuda para ver los comandos disponibles    |" << std::endl;
@@ -83,145 +76,110 @@ std::list<Objeto> objetosPrograma;
             std::cout << "$";
             std::getline(std::cin, comandoUsuario);
                
-            //Se toma la primera entrada por el usuario como el comando 
             std::istringstream stream(comandoUsuario);
             stream >> comandoUsuario;
 
-            /*Se toma el resto de la línea ingresada como argumentos por
-            //medio del .pushback() que va metiendo lo leído dentro de
-            //argumentosUsuario*/
             argumentosUsuario.clear();
             while (stream >> argumento) {
-                    argumentosUsuario.push_back(argumento);
+                argumentosUsuario.push_back(argumento);
             }
-          
-            //Comando componente 1 (7/7)
+
             if (comandoUsuario == "salir") {
-                    salir();
-                    break;
-                //Componente parte interaccion con el usuario 
+                salir();
+                break;
             } else if (comandoUsuario == "ayuda") {
-                    if (!argumentosUsuario.empty()) {
-                        ayuda(argumentosUsuario[0]);
-                    } else {
-                        comandosDisponibles();
-                    }
-                    //Comando componente 1 (1/7)
-                    } else if (comandoUsuario == "cargar") {
-                    if (argumentosUsuario.size() == 1) {
-                        cargarArchivo(argumentosUsuario[0], objetosPrograma);
-                    } else {
-                        std::cout<<"Error"<<std::endl;
-                        std::cout << "Uso incorrecto, use 'ayuda cargar' para más informacion.\n";
-                    }
-                    //Comando componente 1 (2/7)
-                    } else if (comandoUsuario == "listado") {
-                    //Salidas en pantalla error 
-                    if(objetosPrograma.empty()){
-                        std::cout << "(Memoria vacía) Ningun objeto ha sido cargado en memoria." << std::endl;
-                    }else {
-                        //Salida en pantalla resultadon exitoso
-                        
-                        std::cout << "\n(Resultado exitoso) Hay " <<objetosPrograma.size() << " objetos en memoria:" <<std::endl;
-                        // ACA TENER DISPONIBLE LA LISTA DE OBJETOS y se imprimira lo siguiente:
-                        // nombre_objeto_1 contiene n_1 vertices, a_1 aristas y c_1 caras.
-                        listado(objetosPrograma);
-                    }
-                    //Comando componente (5/7)
-                    } else if (comandoUsuario == "descargar") {
-                    if (argumentosUsuario.size() == 1) {  
-                      // TODO TIENE Q ESTAR CARGADO EN MEMORIA
-                        descargar(argumentosUsuario[0], objetosPrograma);
-                    } else {
-                        std::cout<<"Error"<<std::endl;
-                        std::cout<<"Uso incorrecto, use 'ayuda descargar' para más informacion.\n";
-                    }
-                    } else if (comandoUsuario == "guardar") {
-                    if (argumentosUsuario.size() == 2) {
-                      //TODO TIENE QUE ESTAR CARGADO EN MEMORIA
-                        guardar(argumentosUsuario[0], argumentosUsuario[1], objetosPrograma);
-                    } else {
-                        std::cout<<"Error"<<std::endl;
-                        std::cout << "Uso incorrecto, use 'ayuda guardar' para más informacion.\n";
-                    }
-                    } else if (comandoUsuario == "envolvente") {
-                        //TODO DEBE ESTAR CARGADO EN MEMORIA
-                    if (argumentosUsuario.size() == 1) {
-                        envolvente(argumentosUsuario[0]);
-                    } else if (argumentosUsuario.empty()) {
-                        envolvente();
-                    } else {
-                        std::cout<<"Error"<<std::endl;
-                        std::cout << "Uso incorrecto, use 'ayuda envolvente' para más informacion.\n";
-                    }
-                    }else if (comandoUsuario == "v_cercano") {
-                    if (argumentosUsuario.size() == 3) {
-                        int px=0;
-                        int py=0;
-                        int pz=0;
-                        v_cercano(px, py, pz);
-                    } else if (argumentosUsuario.empty()) {
-                        int px;
-                        int py;
-                        int pz;
-                        std::string nombreObjeto;
-                        std::cout<<" Ingreselas posiciones x, y, z y el nombre del objeto: "<<std::endl;
-                        std::cin>>px>>py>>pz>>nombreObjeto;
-                        v_cercano(px, py, pz, nombreObjeto);
-                    } else {
-                        std::cout << "Error: Uso incorrecto. Use 'ayuda v_cercano' para más informacion." << std::endl;
-                    }
-
-                    } else if (comandoUsuario == "ruta_corta") {
-                    if (argumentosUsuario.size() == 3) {
-                        Vertice i1, i2;
-                        std::string nombreObjeto = argumentosUsuario[2];
-                        ruta_corta(i1, i2, nombreObjeto);
-                    } else if (argumentosUsuario.empty()) {
-                        Vertice i1, i2;
-                        std::string nombreObjeto;
-                        std::cout<<"Ingrese la posicion de los indices y el nombre del objeto"<<std::endl;
-                        std::cin>>nombreObjeto;
-                        ruta_corta(i1, i2, nombreObjeto);
-                    } else {
-                        std::cout << "Error: Uso incorrecto. Use 'ayuda ruta_corta' para más informacion." << std::endl;
-                    }
-
-                    } else if (comandoUsuario == "ruta_corta_centro") {
-                    if (argumentosUsuario.size() == 2) {
-                        Vertice i1;
-                        std::string nombreObjeto = argumentosUsuario[1];
-                        ruta_corta_centro(i1, nombreObjeto);
-                    } else if (argumentosUsuario.empty()) {
-                        Vertice i1;
-                        std::string nombreObjeto;
-                        ruta_corta_centro(i1, nombreObjeto);
-                    } else {
-                        std::cout << "Error: Uso incorrecto. Use 'ayuda ruta_corta_centro' para más informacion." << std::endl;
-                    }
-
-                    } else if (comandoUsuario == "v_cercanos_caja") {
-                    if (argumentosUsuario.size() == 1) {
-                        std::string nombreObjeto = argumentosUsuario[0];
-                        v_cercanos_caja(nombreObjeto);
-                    } else {
-                        std::cout << "Error: Uso incorrecto. Use 'ayuda v_cercanos_caja' para más informacion." << std::endl;
-                    }
-
-                    } else {
-                        std::cout<<"    ________________________________________________________________________________\n";
-                        std::cout<<"    |                            Comando no reconocido.                            |\n";
-                        std::cout<<"    |            Use 'ayuda' para ver la lista de comandos disponibles.            |\n";
-                        std::cout<<"    |______________________________________________________________________________|\n";
+                if (!argumentosUsuario.empty()) {
+                    ayuda(argumentosUsuario[0]);
+                } else {
+                    comandosDisponibles();
                 }
+            } else if (comandoUsuario == "cargar") {
+                if (argumentosUsuario.size() == 1) {
+                    cargarArchivo(argumentosUsuario[0], objetosPrograma);
+                } else {
+                    std::cout<<"Error"<<std::endl;
+                    std::cout << "Uso incorrecto, use 'ayuda cargar' para más informacion.\n";
+                }
+            } else if (comandoUsuario == "listado") {
+                if (objetosPrograma.empty()) {
+                    std::cout << "(Memoria vacía) Ningun objeto ha sido cargado en memoria." << std::endl;
+                } else {
+                    std::cout << "\n(Resultado exitoso) Hay " << objetosPrograma.size() << " objetos en memoria:" << std::endl;
+                    listado(objetosPrograma);
+                }
+            } else if (comandoUsuario == "descargar") {
+                if (argumentosUsuario.size() == 1) {  
+                    descargar(argumentosUsuario[0], objetosPrograma);
+                } else {
+                    std::cout<<"Error"<<std::endl;
+                    std::cout<<"Uso incorrecto, use 'ayuda descargar' para más informacion.\n";
+                }
+            } else if (comandoUsuario == "guardar") {
+                if (argumentosUsuario.size() == 2) {
+                    guardar(argumentosUsuario[0], argumentosUsuario[1], objetosPrograma);
+                } else {
+                    std::cout<<"Error"<<std::endl;
+                    std::cout << "Uso incorrecto, use 'ayuda guardar' para más informacion.\n";
+                }
+            } else if (comandoUsuario == "envolvente") {
+                if (argumentosUsuario.size() == 1) {
+                    envolvente(argumentosUsuario[0]);
+                } else if (argumentosUsuario.empty()) {
+                    envolvente();
+                } else {
+                    std::cout<<"Error"<<std::endl;
+                    std::cout << "Uso incorrecto, use 'ayuda envolvente' para más informacion.\n";
+                }
+            } else if (comandoUsuario == "v_cercano") {
+                if (argumentosUsuario.size() == 3) {
+                    int px = std::stoi(argumentosUsuario[0]); 
+                    int py = std::stoi(argumentosUsuario[1]);
+                    int pz = std::stoi(argumentosUsuario[2]);
+                    v_cercano(px, py, pz);
+                } else if (argumentosUsuario.size() == 4) {
+                    int px = std::stoi(argumentosUsuario[0]); 
+                    int py = std::stoi(argumentosUsuario[1]);
+                    int pz = std::stoi(argumentosUsuario[2]);
+                    std::string nombreObjeto = argumentosUsuario[3];
+                    v_cercano(px, py, pz, nombreObjeto);
+                } else {
+                    std::cout << "Error: Uso incorrecto. Use 'ayuda v_cercano' para más informacion." << std::endl;
+                }
+            } else if (comandoUsuario == "ruta_corta") {
+                if (argumentosUsuario.size() == 3) {
+                    Vertice i1, i2;
+                    std::string nombreObjeto = argumentosUsuario[2];
+                    ruta_corta(i1, i2, nombreObjeto);
+                } else {
+                    std::cout << "Error: Uso incorrecto. Use 'ayuda ruta_corta' para más informacion." << std::endl;
+                }
+            } else if (comandoUsuario == "ruta_corta_centro") {
+                if (argumentosUsuario.size() == 2) {
+                    Vertice i1;
+                    std::string nombreObjeto = argumentosUsuario[1];
+                    ruta_corta_centro(i1, nombreObjeto);
+                } else {
+                    std::cout << "Error: Uso incorrecto. Use 'ayuda ruta_corta_centro' para más informacion." << std::endl;
+                }
+            } else if (comandoUsuario == "v_cercanos_caja") {
+                if (argumentosUsuario.size() == 1) {
+                    std::string nombreObjeto = argumentosUsuario[0];
+                    v_cercanos_caja(nombreObjeto);
+                } else {
+                    std::cout << "Error: Uso incorrecto. Use 'ayuda v_cercanos_caja' para más informacion." << std::endl;
+                }
+            } else {
+                std::cout<<"    ________________________________________________________________________________\n";
+                std::cout<<"    |                            Comando no reconocido.                            |\n";
+                std::cout<<"    |            Use 'ayuda' para ver la lista de comandos disponibles.            |\n";
+                std::cout<<"    |______________________________________________________________________________|\n";
             }
-
-    }catch(const std::runtime_error& e ){
-            std::cout << "Error: " << e.what() << '\n';
+        }
+    } catch(const std::runtime_error& e) {
+        std::cout << "Error: " << e.what() << '\n';
     }
-          return 0;
-  }
-
+    return 0;
+}
 
    /*Función encargada de indicar la forma correcta de hacer el 
     llamado a un determinado comando que se pasa como parametro */
@@ -575,83 +533,57 @@ void envolvente(std::string nombreObjeto) {
     Vertice v1, v2, v3, v4, v5, v6, v7, v8;
     //Primer vertice
     v1.fijarX(static_cast<unsigned int>(xmin));
-    std::cout<<"__________________________________________";
-    std::cout << "\n| Vertice 1:[ x = " << v1.obtenerX() << ", y = "; 
     v1.fijarY(static_cast<unsigned int>(ymin));
-    std::cout<< v1.obtenerY() << ", " << "z = ";; 
-    v1.fijarZ(static_cast<unsigned int>(zmin));
-    std::cout << v1.obtenerZ() << "] " << "v1 |"<<std::endl; 
+    v1.fijarZ(static_cast<unsigned int>(zmin)); 
     v1.fijarIndiceVer(0);//v1
     verticesAux.push_back(v1);
     //--------------------------------------------
     //Segundo vertice
-    v2.fijarX(static_cast<unsigned int>(xmax));
-    std::cout << "| Vertice 2:[ x = " << v2.obtenerX() << ", " << "y = "; 
-    v2.fijarY(static_cast<unsigned int>(ymin));
-    std::cout << v2.obtenerY() << ", " << "z = "; 
-    v2.fijarZ(static_cast<unsigned int>(zmin));
-    std::cout  << v2.obtenerZ() << "] " << "v2 |"<<std::endl; 
+    v2.fijarX(static_cast<unsigned int>(xmax)); 
+    v2.fijarY(static_cast<unsigned int>(ymin)); 
+    v2.fijarZ(static_cast<unsigned int>(zmin)); 
     v2.fijarIndiceVer(1);//v2
     verticesAux.push_back(v2);
     //--------------------------------------------
     //Tercer vertice
     v3.fijarX(static_cast<unsigned int>(xmax));
-    std::cout << "| Vertice 3:[ x = " << v3.obtenerX() << ", " <<"y= ";
     v3.fijarY(static_cast<unsigned int>(ymax));
-    std::cout << v3.obtenerY() << ", " << "z= ";
     v3.fijarZ(static_cast<unsigned int>(zmin));
-    std::cout << v3.obtenerZ() << "] " << " v3 |"<<std::endl;
     v3.fijarIndiceVer(2);//v3
     verticesAux.push_back(v3);
     //--------------------------------------------
     //Cuarto vertice
     v4.fijarX(static_cast<unsigned int>(xmin));
-    std::cout << "| Vertice 4:[ x = " << v4.obtenerX() << ", " <<"y = ";
     v4.fijarY(static_cast<unsigned int>(ymax));
-    std::cout << v4.obtenerY() << ", " << "z= ";
     v4.fijarZ(static_cast<unsigned int>(zmin)); 
-    std::cout << v4.obtenerZ() << "] " << " v4 |"<<std::endl;
     v4.fijarIndiceVer(3);//v4
     verticesAux.push_back(v4);
     //--------------------------------------------
     //Quinto vertice
     v5.fijarX(static_cast<unsigned int>(xmin));
-    std::cout << "| Vertice 5:[ x = " << v5.obtenerX() << ", " <<"y = ";
     v5.fijarY(static_cast<unsigned int>(ymin));
-    std::cout << v5.obtenerY() << ", " << "z = ";
     v5.fijarZ(static_cast<unsigned int>(zmax));
-    std::cout << v5.obtenerZ() << "] " << " v5 |"<<std::endl;
     v5.fijarIndiceVer(4);//v5
     verticesAux.push_back(v5);
     //--------------------------------------------
     //Sexto vertice
     v6.fijarX(static_cast<unsigned int>(xmax));
-    std::cout << "| Vertice 6:[ x = " << v6.obtenerX() << ", " <<"y = ";
     v6.fijarY(static_cast<unsigned int>(ymin));
-    std::cout << v6.obtenerY() << ", " << " z = ";
     v6.fijarZ(static_cast<unsigned int>(zmax));
-    std::cout << v6.obtenerZ() << "] " << " v6 |"<<std::endl;
     v6.fijarIndiceVer(5);//v6
     verticesAux.push_back(v6);
     //--------------------------------------------
     //Septimo vertice
     v7.fijarX(static_cast<unsigned int>(xmax));
-    std::cout << "| Vertice 7:[ x = " << v7.obtenerX() << ", " <<"y = ";
     v7.fijarY(static_cast<unsigned int>(ymax)); 
-    std::cout << v7.obtenerY() << ", " << "z = ";
     v7.fijarZ(static_cast<unsigned int>(zmax));
-    std::cout << v7.obtenerZ() << "] " << " v7 |"<<std::endl;
     v7.fijarIndiceVer(6);//v7
     verticesAux.push_back(v7);
     //--------------------------------------------
     //Octavo vertice
     v8.fijarX(static_cast<unsigned int>(xmin));
-    std::cout << "| Vertice 8:[ x = " << v8.obtenerX() << ", " <<" y = ";
     v8.fijarY(static_cast<unsigned int>(ymax));
-    std::cout << v8.obtenerY() << ", " << "z = ";
     v8.fijarZ(static_cast<unsigned int>(zmax));
-    std::cout << v8.obtenerZ() << "] " << " v8 |"<<std::endl;
-    std::cout<<"_________________________________________"<<std::endl;
     v8.fijarIndiceVer(7);//v8
     verticesAux.push_back(v8);
     //--------------------------------------------
@@ -666,7 +598,7 @@ void envolvente(std::string nombreObjeto) {
 
             if (indice < verticesAux.size()) {
                 indices.push_back(indice);
-                std::cout << "Se ha ingresado el indice " << indice << " a la cara" << std::endl;
+                
             } else {
                 std::cerr << "Indice de vertice fuera de rango: " << indice << std::endl;
                 std::cout << "No se ha agregado ninguna cara tras este mensaje" << std::endl;
@@ -700,8 +632,6 @@ void envolvente(std::string nombreObjeto) {
 
                 aristas.push_back(arista);
 
-                std::cout<<"\nSe ha ingresado: "<<std::endl;
-                arista.imprimirArista();
             }
         }
 
@@ -716,6 +646,9 @@ void envolvente(std::string nombreObjeto) {
     // Agregar la caja envolvente a la lista de objetos en memoria
     objetosPrograma.push_back(cajaEnvolvente);
     std::cout<<"_____________________________________________________________________________"<<std::endl;
+    std::cout << "\nPuntos extremos del objeto:" << std::endl;
+    std::cout << "Punto mínimo [xmin: " << xmin << ", ymin: " << ymin << ", zmin: " << zmin << "]" << std::endl;
+    std::cout << "Punto máximo [xmax: " << xmax << ", ymax: " << ymax << ", zmax: " << zmax << "]" << std::endl;
     std::cout << "\n(Resultado exitoso) La caja envolvente del objeto " << nombreObjeto << " se ha generado con el nombre " << nuevoNombre << " y se ha agregado a los objetos en memoria." << std::endl;
 }
 
@@ -789,90 +722,62 @@ void envolvente() {
     Vertice v1, v2, v3, v4, v5, v6, v7, v8;
     //Primer vertice
     v1.fijarX(static_cast<unsigned int>(xmin));
-    std::cout<<"________________________________________";
-    std::cout << "\n| Vertice 1:[ x = " << v1.obtenerX() << ", y = "; 
     v1.fijarY(static_cast<unsigned int>(ymin));
-    std::cout<< v1.obtenerY() << ", " << "z = ";; 
     v1.fijarZ(static_cast<unsigned int>(zmin));
-    std::cout << v1.obtenerZ() << "] " << "v1 |"<<std::endl; 
     v1.fijarIndiceVer(0);//v1
     verticesAux.push_back(v1);
     //--------------------------------------------
     //Segundo vertice
     v2.fijarX(static_cast<unsigned int>(xmax));
-    std::cout << "| Vertice 2:[ x = " << v2.obtenerX() << ", " << "y = "; 
-    v2.fijarY(static_cast<unsigned int>(ymin));
-    std::cout << v2.obtenerY() << ", " << "z = "; 
+    v2.fijarY(static_cast<unsigned int>(ymin)); 
     v2.fijarZ(static_cast<unsigned int>(zmin));
-    std::cout  << v2.obtenerZ() << "] " << "v2 |"<<std::endl; 
     v2.fijarIndiceVer(1);//v2
     verticesAux.push_back(v2);
     //--------------------------------------------
     //Tercer vertice
     v3.fijarX(static_cast<unsigned int>(xmax));
-    std::cout << "| Vertice 3:[ x = " << v3.obtenerX() << ", " <<"y= ";
     v3.fijarY(static_cast<unsigned int>(ymax));
-    std::cout << v3.obtenerY() << ", " << "z= ";
     v3.fijarZ(static_cast<unsigned int>(zmin));
-    std::cout << v3.obtenerZ() << "] " << " v3 |"<<std::endl;
     v3.fijarIndiceVer(2);//v3
     verticesAux.push_back(v3);
     //--------------------------------------------
     //Cuarto vertice
     v4.fijarX(static_cast<unsigned int>(xmin));
-    std::cout << "| Vertice 4:[ x = " << v4.obtenerX() << ", " <<"y = ";
     v4.fijarY(static_cast<unsigned int>(ymax));
-    std::cout << v4.obtenerY() << ", " << "z= ";
     v4.fijarZ(static_cast<unsigned int>(zmin)); 
-    std::cout << v4.obtenerZ() << "] " << " v4 |"<<std::endl;
     v4.fijarIndiceVer(3);//v4
     verticesAux.push_back(v4);
     //--------------------------------------------
     //Quinto vertice
     v5.fijarX(static_cast<unsigned int>(xmin));
-    std::cout << "| Vertice 5:[ x = " << v5.obtenerX() << ", " <<"y = ";
     v5.fijarY(static_cast<unsigned int>(ymin));
-    std::cout << v5.obtenerY() << ", " << "z = ";
     v5.fijarZ(static_cast<unsigned int>(zmax));
-    std::cout << v5.obtenerZ() << "] " << " v5 |"<<std::endl;
     v5.fijarIndiceVer(4);//v5
     verticesAux.push_back(v5);
     //--------------------------------------------
     //Sexto vertice
     v6.fijarX(static_cast<unsigned int>(xmax));
-    std::cout << "| Vertice 6:[ x = " << v6.obtenerX() << ", " <<"y = ";
     v6.fijarY(static_cast<unsigned int>(ymin));
-    std::cout << v6.obtenerY() << ", " << " z = ";
     v6.fijarZ(static_cast<unsigned int>(zmax));
-    std::cout << v6.obtenerZ() << "] " << " v6 |"<<std::endl;
     v6.fijarIndiceVer(5);//v6
     verticesAux.push_back(v6);
     //--------------------------------------------
     //Septimo vertice
     v7.fijarX(static_cast<unsigned int>(xmax));
-    std::cout << "| Vertice 7:[ x = " << v7.obtenerX() << ", " <<"y = ";
     v7.fijarY(static_cast<unsigned int>(ymax)); 
-    std::cout << v7.obtenerY() << ", " << "z = ";
     v7.fijarZ(static_cast<unsigned int>(zmax));
-    std::cout << v7.obtenerZ() << "] " << " v7 |"<<std::endl;
     v7.fijarIndiceVer(6);//v7
     verticesAux.push_back(v7);
     //--------------------------------------------
     //Octavo vertice
     v8.fijarX(static_cast<unsigned int>(xmin));
-    std::cout << "| Vertice 8:[ x = " << v8.obtenerX() << ", " <<" y = ";
     v8.fijarY(static_cast<unsigned int>(ymax));
-    std::cout << v8.obtenerY() << ", " << "z = ";
     v8.fijarZ(static_cast<unsigned int>(zmax));
-    std::cout << v8.obtenerZ() << "] " << " v8 |"<<std::endl;
-    std::cout<<"________________________________________"<<std::endl;
     v8.fijarIndiceVer(7);//v8
     verticesAux.push_back(v8);
     //--------------------------------------------
     std::vector<unsigned int> indices;
         indices.reserve(6); // Reservar espacio para evitar realineaciones innecesarias
-
-        std::cout << std::endl;
 
         // Recorre los primeros 6 elementos o el tamaño de verticesAux si es menor
         for (size_t i = 0; i < std::min<size_t>(6, verticesAux.size()); ++i) {
@@ -880,7 +785,7 @@ void envolvente() {
 
             if (indice < verticesAux.size()) {
                 indices.push_back(indice);
-                std::cout << "Se ha ingresado el índice " << indice << " a la cara" << std::endl;
+                
             } else {
                 std::cerr << "Indice de vertice fuera de rango: " << indice << std::endl;
                 std::cout << "No se ha agregado ninguna cara tras este mensaje" << std::endl;
@@ -914,8 +819,7 @@ void envolvente() {
 
                 aristas.push_back(arista);
 
-                std::cout << "\nSe ha ingresado: " << std::endl;
-                arista.imprimirArista();
+                
             }
         }
 
@@ -927,7 +831,9 @@ void envolvente() {
     
     // Agregar la caja envolvente a la lista de objetos en memoria
     objetosPrograma.push_back(cajaEnvolvente);
-
+    std::cout << "\nPuntos extremos del objeto:" << std::endl;
+      std::cout << "Punto mínimo [xmin: " << xmin << ", ymin: " << ymin << ", zmin: " << zmin << "]" << std::endl;
+      std::cout << "Punto máximo [xmax: " << xmax << ", ymax: " << ymax << ", zmax: " << zmax << "]" << std::endl;
     std::cout << "\n(Resultado exitoso) La caja envolvente de los objetos en memoria se ha generado con el nombre " << nuevoNombre << " y se ha agregado a los objetos en memoria." << std::endl;
 }
 
@@ -1078,46 +984,112 @@ void envolvente() {
     exit(0);                                 
   }
 //////////////////////////////////COMPONENTE 2///////////////////////////////
-void v_cercano(int px, int py, int pz, std::string nombreObjeto) {
+void v_cercano(int px, int py, int pz, std::string nombreObjeto) {//ESTOY ARREGLANDO LA FUNCION ATT MIGUEL
     // Aqui faltaria colocar la logica para encontrar el objeto y  
     // cualcular el valor de la distancia (valor_distancia) 
     //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
 
   if (nombreObjeto!="") {
-      std::cout<<"El vertice i ("<<"cordenada(vx,vy,vz)"<<") del objeto "<<nombreObjeto<<" es el mas cercano al punto ("<<px<<", "<<py<<", "<<pz<<"), a una distancia de: "<<"valor_distancia"<<std::endl;
+      std::cout<<"El vertice i ("<<"cordenada(vx,vy,vz)"<<") del objeto "<<nombreObjeto<<" es el más cercano al punto ("<<px<<", "<<py<<", "<<pz<<"), a una distancia de: "<<"valor_distancia"<<std::endl;
   } else {
       std::cerr<<"El objeto "<<nombreObjeto<<" no ha sido encontrado en memoria"<<std::endl;
   }
 }
 
+
 void v_cercano(int px, int py, int pz) {
-    // Aqui faltaria colocar la logica para encontrar el objeto y  
-    // cualcular el valor de la distancia (valor_distancia) 
+    //Verificar si hay objetos cargados en memoria
+    if (objetosPrograma.empty()) {
+        std::cerr << "Ningún objeto ha sido cargado en memoria" << std::endl;
+        return;
+    }
 
-  bool exito=true;
+    double minDistancia = std::numeric_limits<double>::max();//Inicializar la distancia minima como un valor maximo
+    Vertice verticeCercano;
+    std::string objetoCercano;
 
-  //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
+    for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
+        std::list<Cara> caras = itObj->obtenerCaras(); // No usar const aquí
+        for (std::list<Cara>::iterator itCara = caras.begin(); itCara != caras.end(); itCara++) {
+            std::list<Arista> aristas = itCara->obtenerListaAristas(); // No usar const aquí
+            for (std::list<Arista>::iterator itArista = aristas.begin(); itArista != aristas.end(); itArista++) {
+                std::list<Vertice> vertices = itArista->obtenerListaVertices(); // No usar const aquí
+                for (std::list<Vertice>::iterator itVertice = vertices.begin(); itVertice != vertices.end(); itVertice++) {
+                    // Calcular la distancia euclidiana entre el punto dado y el vértice actual
+                    double distancia = sqrt(pow(px - itVertice->obtenerX(), 2) +
+                                            pow(py - itVertice->obtenerY(), 2) +
+                                            pow(pz - itVertice->obtenerZ(), 2));
+                    // Si se encuentra una distancia menor a la mínima registrada, se actualiza
+                    if (distancia < minDistancia) {
+                        minDistancia = distancia;
+                        verticeCercano = *itVertice;  
+                        objetoCercano = itObj->obtenerNombreObjeto();
+                    }
+                }
+            }
+        }
+    }
 
-  if (exito) {
-      std::cout<<"El vertice i ("<<"cordenada(vx,vy,vz)"<<") del objeto "<<"nombreObjeto"<<" es el mas cercano al punto ("<<px<<", "<<py<<", "<<pz<<"), a una distancia de: "<<"valor_distancia"<<std::endl;
-  } else {
-      std::cerr<<"Ningun objeto ha sido cargado en memoria"<<std::endl;
-  }
+    // Mostrar el resultado
+    if (minDistancia < std::numeric_limits<double>::max()) {
+        std::cout << "El vertice " << verticeCercano.obtenerIndiceVer() << " ("
+                  << verticeCercano.obtenerX() << ", " << verticeCercano.obtenerY() << ", "
+                  << verticeCercano.obtenerZ() << ") del objeto " << objetoCercano
+                  << " es el más cercano al punto (" << px << ", " << py << ", " << pz
+                  << "), a una distancia de: " << minDistancia << std::endl;
+    } else {
+        std::cerr << "No se encontraron vértices en los objetos cargados." << std::endl;
+    }
 }
 
-void v_cercanos_caja(std::string nombreObjeto) {
-  // Aqui faltaria colocar la logica para encontrar el objeto
+void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCION ATT MIGUEL :3
+    // Buscar el objeto en la lista
+    Objeto* obj = nullptr;
+    for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
+        if (itObj->obtenerNombreObjeto() == nombreObjeto) {
+            obj = &(*itObj);
+            break;
+        }
+    }
 
-//si ya esta el objeto
-  //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
+    if (obj == nullptr) {
+        std::cerr << "El objeto " << nombreObjeto << " no ha sido encontrado en memoria" << std::endl;
+        return;
+    }
 
-  if (nombreObjeto!="") {
-      std::cout<<"O Los vertices del objeto "<<nombreObjeto<<" mas cercanos a las esquinas de su caja envolvente son:"<<std::endl;
-  } else {
-      std::cerr<<"El objeto "<<nombreObjeto<<" no ha sido cargado en memoria."<<std::endl;
-  }
+    
+    Vertice pmin; 
+    Vertice pmax; 
+    std::vector<Vertice> esquinasCaja = {/* las 8 esquinas de la caja */};
+
+    std::cout << "Los vértices del objeto " << nombreObjeto << " más cercanos a las esquinas de su caja envolvente son:" << std::endl;
+    std::cout << "Esquina\t\tVértice\t\tDistancia" << std::endl;
+
+    for (int i = 0; i < 8; ++i) {
+        Vertice esquina = esquinasCaja[i];
+        Vertice verticeCercano;
+        double minDistancia = std::numeric_limits<double>::max();
+
+        for (std::list<Cara>::iterator itCara = obj->obtenerCaras().begin(); itCara != obj->obtenerCaras().end(); itCara++) {
+            for (std::list<Arista>::iterator itArista = itCara->obtenerListaAristas().begin(); itArista != itCara->obtenerListaAristas().end(); itArista++) {
+                for (std::list<Vertice>::iterator itVertice = itArista->obtenerListaVertices().begin(); itVertice != itArista->obtenerListaVertices().end(); itVertice++) {
+                    double distancia = sqrt(pow(esquina.obtenerX() - itVertice->obtenerX(), 2) +
+                                            pow(esquina.obtenerY() - itVertice->obtenerY(), 2) +
+                                            pow(esquina.obtenerZ() - itVertice->obtenerZ(), 2));
+                    if (distancia < minDistancia) {
+                        minDistancia = distancia;
+                        verticeCercano = *itVertice;
+                    }
+                }
+            }
+        }
+
+        std::cout << i + 1 << "\t\t(" << esquina.obtenerX() << ", " << esquina.obtenerY() << ", " << esquina.obtenerZ()
+                  << ")\t\t" << verticeCercano.obtenerIndiceVer() << " (" << verticeCercano.obtenerX() << ", "
+                  << verticeCercano.obtenerY() << ", " << verticeCercano.obtenerZ() << ")\t\t"
+                  << minDistancia << std::endl;
+    }
 }
-
 
 
 //////////////////////////////////COMPONENTE 3///////////////////////////////
@@ -1279,5 +1251,4 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
       std::cout<<"Los datos del objeto son validos"<<std::endl;
       return true;
   }
-
   
