@@ -527,7 +527,7 @@ void envolvente(std::string nombreObjeto) {
     cajaEnvolvente.fijarNombreObjeto(nuevoNombre);//Esto es para que el nombre del objeto sea el nombre del objeto mas el prefijo "env_"    
 
     // Definir los 8 vértices de la caja envolvente
-    //En este punto todo estava bien
+    //En este punto todo estaba bien
     std::vector<Vertice> verticesAux;
     verticesAux.reserve(8);
     Vertice v1, v2, v3, v4, v5, v6, v7, v8;
@@ -983,8 +983,10 @@ void envolvente() {
     std::cout<<"\t\t\t\t\t\t\t¡Gracias por usar nuestro programa!";
     exit(0);                                 
   }
+
+
 //////////////////////////////////COMPONENTE 2///////////////////////////////
-void v_cercano(int px, int py, int pz, std::string nombreObjeto) {//ESTOY ARREGLANDO LA FUNCION ATT MIGUEL
+void v_cercano(int px, int py, int pz, std::string nombreObjeto) {//ESTOY ARREGLANDO LA FUNCION ATT MIGUEL Dale, panita
     // Aqui faltaria colocar la logica para encontrar el objeto y  
     // cualcular el valor de la distancia (valor_distancia) 
     //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
@@ -1038,7 +1040,7 @@ void v_cercano(int px, int py, int pz) {
     }
 }
 
-void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCION ATT MIGUEL :3
+void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCION ATT MIGUEL :3 - Dale manito
     // Buscar el objeto en la lista
     Objeto* obj = nullptr;
     for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
@@ -1151,7 +1153,7 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
           return Objeto();
       }
 
-
+  //////////////////////////////////Funciones Auxiliares///////////////////////////////
   /*Función auxiliar para la impresión de objetos encontrados //provisionalmente en un vector(con fines de interacción de usuario),
   //donde se emplea la biblioteca vector, suponiendo que hay un array //estático y no dinámico que contiene a todos los objetos tipo      //Objetocargados en memoria*/
   void imprimirListado(std::list<Objeto>& listadoObjetos){
