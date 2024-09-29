@@ -366,7 +366,7 @@ void ayuda(std::string comando) {
   //existe el objeto, en el caso que no, se imprime un mensaje de error, en el caso que sí, se crea la envolvente*/
   void envolvente(std::string nombreObjeto, std::vector<Objeto>& listadoObjetos){
       Objeto objetoBuscado = encontrarObjeto(nombreObjeto, listadoObjetos);
-      if(objetoBuscado.getNombre() == ""){
+      if(objetoBuscado.obtenerNombreObjeto() == ""){
         std::cout<<"No se encuentra el objeto en memoria";
       }else{
         //LÓGICA PARA CREAR ENVOLVENTE DEL OBJETO SELECCIONADO
@@ -388,7 +388,7 @@ void ayuda(std::string comando) {
   //el nombre indicado*/
   int descargar(std::string nombreObjeto, std::vector<Objeto>& listadoObjetos){
       for(int i=0; i<listadoObjetos.size(); i++){
-        if(listadoObjetos[i].getNombre() == nombreObjeto){
+        if(listadoObjetos[i].obtenerNombreObjeto() == nombreObjeto){
           //Lógica para descargar objetos y toda su información relacionada
           std::cout<<"El objeto "<<nombreObjeto<<" ha sido eliminado de la memoria de trabajo"<<std::endl;
           return 0;
@@ -520,7 +520,7 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
   //se devuelve un objeto vacio*/
   Objeto encontrarObjeto(std::string nombreObjeto, std::vector<Objeto>& listadoObjetos){
     for(int i=0; i<listadoObjetos.size(); i++){
-      if(listadoObjetos[i].getNombre() == nombreObjeto){
+      if(listadoObjetos[i].obtenerNombreObjeto() == nombreObjeto){
         return listadoObjetos[i];
       }
     }
