@@ -1,5 +1,5 @@
-#ifndef KDTREE_H
-#define KDTREE_H
+#ifndef KDTREE_HXX
+#define KDTREE_HXX
 
 #include "Nodo.h"
 #include <vector>
@@ -206,4 +206,4 @@ void KdTree<T>::mostrarRaiz() {
     }
 }
 
-#endif // KDTREE_H
+#endif // KDTREE_HXX
