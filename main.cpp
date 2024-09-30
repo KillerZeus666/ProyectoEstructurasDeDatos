@@ -10,7 +10,7 @@
   #include <vector>
   #include <cmath>
   #include "Objeto.h" // TAD objeto
-
+  #include "KdTree.h"
   ///////////////////////////////////////////////COMPONENTE 1////////////////////////////////////////// 
 
   /*Funciones encargadas de subir un objeto a memoria,
@@ -527,7 +527,7 @@ void envolvente(std::string nombreObjeto) {
     cajaEnvolvente.fijarNombreObjeto(nuevoNombre);//Esto es para que el nombre del objeto sea el nombre del objeto mas el prefijo "env_"    
 
     // Definir los 8 vértices de la caja envolvente
-    //En este punto todo estaba bien
+    //En este punto todo estava bien
     std::vector<Vertice> verticesAux;
     verticesAux.reserve(8);
     Vertice v1, v2, v3, v4, v5, v6, v7, v8;
@@ -983,10 +983,8 @@ void envolvente() {
     std::cout<<"\t\t\t\t\t\t\t¡Gracias por usar nuestro programa!";
     exit(0);                                 
   }
-
-
 //////////////////////////////////COMPONENTE 2///////////////////////////////
-void v_cercano(int px, int py, int pz, std::string nombreObjeto) {//ESTOY ARREGLANDO LA FUNCION ATT MIGUEL Dale, panita
+void v_cercano(int px, int py, int pz, std::string nombreObjeto) {//ESTOY ARREGLANDO LA FUNCION ATT MIGUEL
     // Aqui faltaria colocar la logica para encontrar el objeto y  
     // cualcular el valor de la distancia (valor_distancia) 
     //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
@@ -1000,47 +998,60 @@ void v_cercano(int px, int py, int pz, std::string nombreObjeto) {//ESTOY ARREGL
 
 
 void v_cercano(int px, int py, int pz) {
-    //Verificar si hay objetos cargados en memoria
+    // Verificar si hay objetos cargados en memoria
     if (objetosPrograma.empty()) {
         std::cerr << "Ningún objeto ha sido cargado en memoria" << std::endl;
         return;
     }
 
-    double minDistancia = std::numeric_limits<double>::max();//Inicializar la distancia minima como un valor maximo
-    Vertice verticeCercano;
-    std::string objetoCercano;
+    // Crear un Kd-Tree para almacenar los vértices en 3D
+    KdTree<double> kdTree(3);
 
+    // Almacenar los vértices de todos los objetos en el Kd-Tree
     for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
-        std::list<Cara> caras = itObj->obtenerCaras(); // No usar const aquí
+        std::string nombre_objeto = itObj->obtenerNombreObjeto(); // Obtener el nombre del objeto
+        std::list<Cara> caras = itObj->obtenerCaras(); // Obtener las caras del objeto
         for (std::list<Cara>::iterator itCara = caras.begin(); itCara != caras.end(); itCara++) {
-            std::list<Arista> aristas = itCara->obtenerListaAristas(); // No usar const aquí
+            std::list<Arista> aristas = itCara->obtenerListaAristas(); // Obtener las aristas de la cara
             for (std::list<Arista>::iterator itArista = aristas.begin(); itArista != aristas.end(); itArista++) {
-                std::list<Vertice> vertices = itArista->obtenerListaVertices(); // No usar const aquí
+                std::list<Vertice> vertices = itArista->obtenerListaVertices(); // Obtener los vértices de la arista
                 for (std::list<Vertice>::iterator itVertice = vertices.begin(); itVertice != vertices.end(); itVertice++) {
-                    // Calcular la distancia euclidiana entre el punto dado y el vértice actual
-                    double distancia = sqrt(pow(px - itVertice->obtenerX(), 2) + pow(py - itVertice->obtenerY(), 2) + pow(pz - itVertice->obtenerZ(), 2));
-                    // Si se encuentra una distancia menor a la mínima registrada, se actualiza
-                    if (distancia < minDistancia) {
-                        minDistancia = distancia;
-                        verticeCercano = *itVertice;  
-                        objetoCercano = itObj->obtenerNombreObjeto();
-                    }
+                    std::vector<double> punto = {
+                        static_cast<double>(itVertice->obtenerX()), 
+                        static_cast<double>(itVertice->obtenerY()), 
+                        static_cast<double>(itVertice->obtenerZ())
+                    };
+                    kdTree.insertar(punto, nombre_objeto); // Insertar el vértice en el Kd-Tree
                 }
             }
         }
     }
 
-    // Mostrar el resultado
-    if (minDistancia < std::numeric_limits<double>::max()) {
-        std::cout << "El vertice " << verticeCercano.obtenerIndiceVer() << " ("<< verticeCercano.obtenerX() << ", " << verticeCercano.obtenerY() << ", "
-                  << verticeCercano.obtenerZ() << ") del objeto " << objetoCercano << " es el más cercano al punto (" << px << ", " << py << ", " << pz
-                  << "), a una distancia de: " << minDistancia << std::endl;
+    // Buscar el vértice más cercano al punto dado
+    std::vector<double> puntoConsulta = { static_cast<double>(px), static_cast<double>(py), static_cast<double>(pz) };
+    Nodo<double>* vertice_cercano = kdTree.buscarMasCercano(puntoConsulta);
+
+    if (vertice_cercano != nullptr) {
+        // Calcular la distancia euclidiana al vértice más cercano
+        double distancia = 0.0;
+        for (unsigned int i = 0; i < 3; i++) {
+            distancia += pow(puntoConsulta[i] - vertice_cercano->punto[i], 2);
+        }
+        distancia = sqrt(distancia);
+        
+        std::cout << "El vértice más cercano es: (";
+        for (auto& coord : vertice_cercano->punto) {
+            std::cout << coord << " ";
+        }
+        std::cout << ") del objeto: " << vertice_cercano->nombre_objeto 
+                  << " con una distancia de: " << distancia << std::endl;
     } else {
-        std::cerr << "No se encontraron vértices en los objetos cargados." << std::endl;
+        std::cout << "No se encontró un vértice cercano." << std::endl;
     }
 }
 
-void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCION ATT MIGUEL :3 - Dale manito
+
+void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCION ATT MIGUEL :3
     // Buscar el objeto en la lista
     Objeto* obj = nullptr;
     for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
@@ -1153,7 +1164,7 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
           return Objeto();
       }
 
-  //////////////////////////////////Funciones Auxiliares///////////////////////////////
+
   /*Función auxiliar para la impresión de objetos encontrados //provisionalmente en un vector(con fines de interacción de usuario),
   //donde se emplea la biblioteca vector, suponiendo que hay un array //estático y no dinámico que contiene a todos los objetos tipo      //Objetocargados en memoria*/
   void imprimirListado(std::list<Objeto>& listadoObjetos){
