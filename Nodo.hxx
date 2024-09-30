@@ -13,4 +13,4 @@ public:
         : punto(p), nombre_objeto(nombre), izquierda(nullptr), derecha(nullptr) {}
 };
 
-#endif // NODO_H
+#endif // NODO_HXX
