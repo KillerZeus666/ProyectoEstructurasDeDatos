@@ -1,7 +1,7 @@
 #ifndef KDTREE_HXX
 #define KDTREE_HXX
 
-#include "Nodo.h"
+#include "Nodo.hxx"
 #include <vector>
 #include <iostream>
 #include <cmath>
