@@ -1260,4 +1260,3 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
       std::cout<<"Los datos del objeto son validos"<<std::endl;
       return true;
   }
-  
