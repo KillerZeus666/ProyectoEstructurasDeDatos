@@ -1151,6 +1151,8 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
   }
 }
 
+
+//////////////////////////////////FUNCIONES AUXILIARES///////////////////////////////
   /*Función de búsqueda auxiliar para encontrar un objeto tipo Objeto (malla) por medio de un ciclo for, si no encuentra nada,
   //se devuelve un objeto vacio*/
       Objeto encontrarObjeto(std::string nombreObjeto, std::list<Objeto>& listadoObjetos) {
