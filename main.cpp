@@ -10,7 +10,7 @@
   #include <vector>
   #include <cmath>
   #include "Objeto.h" // TAD objeto
-  #include "KdTree.h"
+  #include "KdTree.hxx"
   ///////////////////////////////////////////////COMPONENTE 1////////////////////////////////////////// 
 
   /*Funciones encargadas de subir un objeto a memoria,
