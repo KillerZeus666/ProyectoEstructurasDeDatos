@@ -4,14 +4,14 @@
 
   #include <iostream>
   #include <fstream>
-  #include <sstream> 
+  #include <sstream>
   #include <string>
   #include <limits>
   #include <vector>
   #include <cmath>
   #include "Objeto.h" // TAD objeto
-  #include "KdTree.hxx"
-  ///////////////////////////////////////////////COMPONENTE 1////////////////////////////////////////// 
+  #include "Kdtree.hxx"
+  ///////////////////////////////////////////////COMPONENTE 1//////////////////////////////////////////
 
   /*Funciones encargadas de subir un objeto a memoria,
   //en este caso, verificacionObjeto()
@@ -55,7 +55,7 @@
 
   ///////////////////////////////////////////////COMPONENTE 4//////////////////////////////////////////
   void ayuda(std::string comando);
-  void comandosDisponibles(); 
+  void comandosDisponibles();
 
 std::list<Objeto> objetosPrograma;
 
@@ -65,7 +65,7 @@ std::list<Objeto> objetosPrograma;
         std::cout << "    |                        Bienvenid@ a nuestro proyecto                         |" << std::endl;
 
         std::string comandoUsuario;
-        std::vector<std::string> argumentosUsuario; 
+        std::vector<std::string> argumentosUsuario;
         std::string argumento;
 
         while (true) {
@@ -75,7 +75,7 @@ std::list<Objeto> objetosPrograma;
             std::cout << "    |______________________________________________________________________________|" << std::endl;
             std::cout << "$";
             std::getline(std::cin, comandoUsuario);
-               
+
             std::istringstream stream(comandoUsuario);
             stream >> comandoUsuario;
 
@@ -108,7 +108,7 @@ std::list<Objeto> objetosPrograma;
                     listado(objetosPrograma);
                 }
             } else if (comandoUsuario == "descargar") {
-                if (argumentosUsuario.size() == 1) {  
+                if (argumentosUsuario.size() == 1) {
                     descargar(argumentosUsuario[0], objetosPrograma);
                 } else {
                     std::cout<<"Error"<<std::endl;
@@ -132,12 +132,12 @@ std::list<Objeto> objetosPrograma;
                 }
             } else if (comandoUsuario == "v_cercano") {
                 if (argumentosUsuario.size() == 3) {
-                    int px = std::stoi(argumentosUsuario[0]); 
+                    int px = std::stoi(argumentosUsuario[0]);
                     int py = std::stoi(argumentosUsuario[1]);
                     int pz = std::stoi(argumentosUsuario[2]);
                     v_cercano(px, py, pz);
                 } else if (argumentosUsuario.size() == 4) {
-                    int px = std::stoi(argumentosUsuario[0]); 
+                    int px = std::stoi(argumentosUsuario[0]);
                     int py = std::stoi(argumentosUsuario[1]);
                     int pz = std::stoi(argumentosUsuario[2]);
                     std::string nombreObjeto = argumentosUsuario[3];
@@ -181,50 +181,50 @@ std::list<Objeto> objetosPrograma;
     return 0;
 }
 
-   /*Función encargada de indicar la forma correcta de hacer el 
+   /*Función encargada de indicar la forma correcta de hacer el
     llamado a un determinado comando que se pasa como parametro */
 void ayuda(std::string comando) {
-    
+
     if (comando == "cargar" || comando == "Cargar") {
-        
+
         std::cout << "Uso: cargar nombreArchivo - Carga un archivo en memoria.\n";
-        
+
     } else if (comando == "listado" || comando == "Listado") {
-        
+
         std::cout << "Uso: listado - Muestra todos los objetos cargados en memoria.\n";
-        
+
     } else if (comando == "descargar" || comando == "Descargar") {
-        
+
         std::cout << "Uso: descargar nombreObjeto - Descarga un objeto de la memoria.\n";
-        
+
     } else if (comando == "guardar" || comando == "Guardar") {
-        
+
         std::cout << "Uso: guardar nombreObjeto nombreArchivo - Guarda un objeto en un archivo.\n";
-        
+
     } else if (comando == "envolvente" || comando == "Envolvente") {
-        
+
         std::cout << "Uso: envolvente - Calcula y agrega una caja envolvente global que incluye todos los objetos cargados en memoria.\n";
-        
+
     } else if (comando == "v_cercano" || comando == "V_cercano") {
-        
+
         std::cout << "Uso: v_cercano nombreObjeto px py pz - Identifica el vertice más cercano al punto (px, py, pz) en el objeto nombreObjeto.\n";
-        
+
         std::cout << "Uso: v_cercano px py pz - Identifica el vertice más cercano al punto (px, py, pz) entre todos los objetos cargados en memoria.\n";
-        
+
     } else if (comando == "v_cercanos_caja" || comando == "V_cercanos_caja") {
-        
+
         std::cout << "Uso: v_cercanos_caja nombreObjeto - Identifica los vertices más cercanos a las esquinas de la caja envolvente del objeto nombreObjeto.\n";
-        
+
     } else if (comando == "ruta_corta" || comando == "Ruta_corta") {
-        
+
         std::cout << "Uso: ruta_corta i1 i2 nombreObjeto - Encuentra la ruta más corta entre dos vertices de un objeto.\n";
-        
+
     } else if (comando == "ruta_corta_centro" || comando == "Ruta_corta_centro") {
-        
+
         std::cout << "Uso: ruta_corta_centro i1 nombreObjeto - Encuentra la ruta mas corta entre un vertice y el centro del objeto.\n";
-        
+
     } else {
-        
+
         std::cout << "El comando no es identificado, por favor use 'ayuda' para ver la lista de comandos disponibles.\n";
     }
 }
@@ -271,7 +271,7 @@ void ayuda(std::string comando) {
  }
 
   /*La función se encarga de cargar un objeto desde un archivo,
-  //en este caso se propone el uso de funciones auxiliares para 
+  //en este caso se propone el uso de funciones auxiliares para
   //tener en cuenta los casos de error propuestos en el
   //enunciado del proyecto*/
   void cargarArchivo(std::string nombreArchivo, std::list<Objeto>& listadoObjetos){
@@ -382,7 +382,7 @@ void ayuda(std::string comando) {
                        //Si se encuentra el -1 o no hay datos, se acaba el ciclo y por lo tanto
                        //la función
                        if (indices.empty() || indices[0] == static_cast<unsigned int>(-1)) {
-                           break;  
+                           break;
                        }
 
                        //Se crea una cara temporal para ir asignándole los vértices
@@ -399,15 +399,15 @@ void ayuda(std::string comando) {
 
                            //Se revisa que no se pase del límite del vector
                            //con tal de no tomar basura
-                           if (i+1< indices.size()) { 
+                           if (i+1< indices.size()) {
                                unsigned int indiceInicio = indices[i];
                                unsigned int indiceFin = indices[i+1];
 
                                //No se crean aristas si se encuentran con el mismo vertice según el indice
-                               if (indiceInicio != indiceFin) {  
+                               if (indiceInicio != indiceFin) {
                                    Arista arista;
                                    //Se divide el indice como i va avanzando en 2 * 2
-                                   arista.fijarIndiceAr(i/2); 
+                                   arista.fijarIndiceAr(i/2);
                                    arista.agregarVertice(verticesAux[indiceInicio]);
                                    arista.agregarVertice(verticesAux[indiceFin]);
 
@@ -428,7 +428,7 @@ void ayuda(std::string comando) {
 
                  listadoObjetos.push_back(objetoAux);
                  std::cout<<std::endl;
-                 std::cout<<"El objeto "<<objetoAux.obtenerNombreObjeto()<<" ha sido cargado exitosamente desde el archivo " 
+                 std::cout<<"El objeto "<<objetoAux.obtenerNombreObjeto()<<" ha sido cargado exitosamente desde el archivo "
                  <<nombreArchivo<<std::endl;
              }
 
@@ -443,7 +443,7 @@ void ayuda(std::string comando) {
   //en un vector con fines prácticos. Además tiene la responsabilidad
   //de imprimir la información de los objetos que encuentre*/
   void listado(std::list<Objeto>& listadoObjetos) {
-        
+
       if(listadoObjetos.size()==0) {
           std::cout<<"Ningun objeto ha sido cargado en memoria\n";
       }else{
@@ -457,7 +457,7 @@ void ayuda(std::string comando) {
   //existe el objeto, en el caso que no, se imprime un mensaje de error, en el caso que sí, se crea la envolvente*/
   // Función para calcular la caja envolvente de un objeto específico
 
-void envolvente(std::string nombreObjeto) {    
+void envolvente(std::string nombreObjeto) {
     // Buscar el objeto en la lista
     Objeto objetoEnMemoria;
     bool objetoEncontrado = false;
@@ -500,22 +500,22 @@ void envolvente(std::string nombreObjeto) {
 
                 if (x < xmin){//se compara el valor de x con el valor minimo actual
                     xmin = x;
-                } 
+                }
                 if (x > xmax){//se compara el valor de x con el valor maximo actual
                     xmax = x;
-                } 
+                }
                 if (y < ymin){//se compara el valor de y con el valor minimo actual
                     ymin = y;
-                } 
+                }
                 if (y > ymax){//se compara el valor de y con el valor maximo actual
                     ymax = y;
-                } 
+                }
                 if (z < zmin){//se compara el valor de z con el valor minimo actual
                     zmin = z;
-                } 
+                }
                 if (z > zmax){//se compara el valor de z con el valor maximo actual
                     zmax = z;
-                } 
+                }
             }
         }
     }
@@ -524,7 +524,7 @@ void envolvente(std::string nombreObjeto) {
     Objeto cajaEnvolvente;
     std::string nuevoNombre = "env_" + nombreObjeto;
 
-    cajaEnvolvente.fijarNombreObjeto(nuevoNombre);//Esto es para que el nombre del objeto sea el nombre del objeto mas el prefijo "env_"    
+    cajaEnvolvente.fijarNombreObjeto(nuevoNombre);//Esto es para que el nombre del objeto sea el nombre del objeto mas el prefijo "env_"
 
     // Definir los 8 vértices de la caja envolvente
     //En este punto todo estava bien
@@ -534,14 +534,14 @@ void envolvente(std::string nombreObjeto) {
     //Primer vertice
     v1.fijarX(static_cast<unsigned int>(xmin));
     v1.fijarY(static_cast<unsigned int>(ymin));
-    v1.fijarZ(static_cast<unsigned int>(zmin)); 
+    v1.fijarZ(static_cast<unsigned int>(zmin));
     v1.fijarIndiceVer(0);//v1
     verticesAux.push_back(v1);
     //--------------------------------------------
     //Segundo vertice
-    v2.fijarX(static_cast<unsigned int>(xmax)); 
-    v2.fijarY(static_cast<unsigned int>(ymin)); 
-    v2.fijarZ(static_cast<unsigned int>(zmin)); 
+    v2.fijarX(static_cast<unsigned int>(xmax));
+    v2.fijarY(static_cast<unsigned int>(ymin));
+    v2.fijarZ(static_cast<unsigned int>(zmin));
     v2.fijarIndiceVer(1);//v2
     verticesAux.push_back(v2);
     //--------------------------------------------
@@ -555,7 +555,7 @@ void envolvente(std::string nombreObjeto) {
     //Cuarto vertice
     v4.fijarX(static_cast<unsigned int>(xmin));
     v4.fijarY(static_cast<unsigned int>(ymax));
-    v4.fijarZ(static_cast<unsigned int>(zmin)); 
+    v4.fijarZ(static_cast<unsigned int>(zmin));
     v4.fijarIndiceVer(3);//v4
     verticesAux.push_back(v4);
     //--------------------------------------------
@@ -575,7 +575,7 @@ void envolvente(std::string nombreObjeto) {
     //--------------------------------------------
     //Septimo vertice
     v7.fijarX(static_cast<unsigned int>(xmax));
-    v7.fijarY(static_cast<unsigned int>(ymax)); 
+    v7.fijarY(static_cast<unsigned int>(ymax));
     v7.fijarZ(static_cast<unsigned int>(zmax));
     v7.fijarIndiceVer(6);//v7
     verticesAux.push_back(v7);
@@ -598,7 +598,7 @@ void envolvente(std::string nombreObjeto) {
 
             if (indice < verticesAux.size()) {
                 indices.push_back(indice);
-                
+
             } else {
                 std::cerr << "Indice de vertice fuera de rango: " << indice << std::endl;
                 std::cout << "No se ha agregado ninguna cara tras este mensaje" << std::endl;
@@ -640,7 +640,7 @@ void envolvente(std::string nombreObjeto) {
         cara.fijarIndiceCar(indiceCara++);
         cara.fijarListaAristas(aristas);
         cajaEnvolvente.agregarCara(cara);
-    
+
 
 
     // Agregar la caja envolvente a la lista de objetos en memoria
@@ -670,7 +670,7 @@ void envolvente() {
     float zmin = std::numeric_limits<float>::max();
     float zmax = -std::numeric_limits<float>::max();
 
-    // Recorrer todos los objetos en memoria     
+    // Recorrer todos los objetos en memoria
         for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
 
             std::list<Cara> caras = itObj->obtenerCaras();
@@ -690,22 +690,22 @@ void envolvente() {
 
                         if (x < xmin){//se compara el valor de x con el valor minimo actual
                             xmin = x;
-                        } 
+                        }
                         if (x > xmax){//se compara el valor de x con el valor maximo actual
                             xmax = x;
-                        } 
+                        }
                         if (y < ymin){//se compara el valor de y con el valor minimo actual
                             ymin = y;
-                        } 
+                        }
                         if (y > ymax){//se compara el valor de y con el valor maximo actual
                             ymax = y;
-                        } 
+                        }
                         if (z < zmin){//se compara el valor de z con el valor minimo actual
                             zmin = z;
-                        } 
+                        }
                         if (z > zmax){//se compara el valor de z con el valor maximo actual
                             zmax = z;
-                        } 
+                        }
                     }
                 }
             }
@@ -729,7 +729,7 @@ void envolvente() {
     //--------------------------------------------
     //Segundo vertice
     v2.fijarX(static_cast<unsigned int>(xmax));
-    v2.fijarY(static_cast<unsigned int>(ymin)); 
+    v2.fijarY(static_cast<unsigned int>(ymin));
     v2.fijarZ(static_cast<unsigned int>(zmin));
     v2.fijarIndiceVer(1);//v2
     verticesAux.push_back(v2);
@@ -744,7 +744,7 @@ void envolvente() {
     //Cuarto vertice
     v4.fijarX(static_cast<unsigned int>(xmin));
     v4.fijarY(static_cast<unsigned int>(ymax));
-    v4.fijarZ(static_cast<unsigned int>(zmin)); 
+    v4.fijarZ(static_cast<unsigned int>(zmin));
     v4.fijarIndiceVer(3);//v4
     verticesAux.push_back(v4);
     //--------------------------------------------
@@ -764,7 +764,7 @@ void envolvente() {
     //--------------------------------------------
     //Septimo vertice
     v7.fijarX(static_cast<unsigned int>(xmax));
-    v7.fijarY(static_cast<unsigned int>(ymax)); 
+    v7.fijarY(static_cast<unsigned int>(ymax));
     v7.fijarZ(static_cast<unsigned int>(zmax));
     v7.fijarIndiceVer(6);//v7
     verticesAux.push_back(v7);
@@ -785,7 +785,7 @@ void envolvente() {
 
             if (indice < verticesAux.size()) {
                 indices.push_back(indice);
-                
+
             } else {
                 std::cerr << "Indice de vertice fuera de rango: " << indice << std::endl;
                 std::cout << "No se ha agregado ninguna cara tras este mensaje" << std::endl;
@@ -819,7 +819,7 @@ void envolvente() {
 
                 aristas.push_back(arista);
 
-                
+
             }
         }
 
@@ -828,7 +828,7 @@ void envolvente() {
         cara.fijarIndiceCar(indiceCara++);
         cara.fijarListaAristas(aristas);
         cajaEnvolvente.agregarCara(cara);
-    
+
     // Agregar la caja envolvente a la lista de objetos en memoria
     objetosPrograma.push_back(cajaEnvolvente);
     std::cout << "\nPuntos extremos del objeto:" << std::endl;
@@ -844,17 +844,17 @@ void envolvente() {
         std::list<Objeto>::iterator iteradorBorrar;
         std::list<Objeto>::iterator iteradorBorrar2;
         iteradorBorrar = listadoObjetos.begin();
-        
+
         bool confirmacion=false;
 
         for (; iteradorBorrar != listadoObjetos.end();) {
-            
+
             if (iteradorBorrar->obtenerNombreObjeto() == nombreObjeto) {
-                
+
                 iteradorBorrar = listadoObjetos.erase(iteradorBorrar);
                 std::cout<<"El objeto "<<nombreObjeto<<" ha sido eliminado de la memoria de trabajo"<<std::endl;
-                confirmacion = true; 
-                break; 
+                confirmacion = true;
+                break;
             } else {
                 iteradorBorrar++;
             }
@@ -864,7 +864,7 @@ void envolvente() {
             std::cout<<"El objeto "<<nombreObjeto<<" no ha sido cargado en memoria"<<std::endl;
         }
     }
-    
+
 
   /*La función emplea formas estándares de abrir y cerrar archivos con lógica sin implementar para guardar un objeto,
   //valiéndose de una función la cual ayuda a encontrar el objeto en memoria que se quiere guardar*/
@@ -874,7 +874,7 @@ void envolvente() {
 
     if(!archivo.is_open()){
       std::cout<<"El archivo no se pudo abrir";
-        
+
     }else{
         std::list<Objeto>::iterator itGuardar;
         itGuardar = listadoObjetos.begin();
@@ -901,7 +901,7 @@ void envolvente() {
             std::list<Cara> listaCarasObjetos = objetoAux.obtenerCaras();
             std::list<Cara>::iterator itCara = listaCarasObjetos.begin();
             std::vector<Vertice> listaVerticesAux;
-            
+
             //Iterar sobre cada cara
             for (; itCara != listaCarasObjetos.end(); itCara++) {
 
@@ -959,7 +959,7 @@ void envolvente() {
 
                 std::vector<unsigned int>::iterator itIndex;
                 itIndex = indicesCaras.begin();
-                
+
                 for (; itIndex != indicesCaras.end(); itIndex++) {
                     archivo<<*(itIndex)<<" ";
                 }
@@ -973,20 +973,20 @@ void envolvente() {
         }else{
             std::cout<<"El objeto "<<nombreObjeto<<" se encuentra en memoria";
         }
-            
+
     }
       archivo.close();
   }
-  
+
 
   void salir(){
     std::cout<<"\t\t\t\t\t\t\t¡Gracias por usar nuestro programa!";
-    exit(0);                                 
+    exit(0);
   }
 //////////////////////////////////COMPONENTE 2///////////////////////////////
 void v_cercano(int px, int py, int pz, std::string nombreObjeto) {//ESTOY ARREGLANDO LA FUNCION ATT MIGUEL
-    // Aqui faltaria colocar la logica para encontrar el objeto y  
-    // cualcular el valor de la distancia (valor_distancia) 
+    // Aqui faltaria colocar la logica para encontrar el objeto y
+    // cualcular el valor de la distancia (valor_distancia)
     //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
 
   if (nombreObjeto!="") {
@@ -1017,8 +1017,8 @@ void v_cercano(int px, int py, int pz) {
                 std::list<Vertice> vertices = itArista->obtenerListaVertices(); // Obtener los vértices de la arista
                 for (std::list<Vertice>::iterator itVertice = vertices.begin(); itVertice != vertices.end(); itVertice++) {
                     std::vector<double> punto = {
-                        static_cast<double>(itVertice->obtenerX()), 
-                        static_cast<double>(itVertice->obtenerY()), 
+                        static_cast<double>(itVertice->obtenerX()),
+                        static_cast<double>(itVertice->obtenerY()),
                         static_cast<double>(itVertice->obtenerZ())
                     };
                     kdTree.insertar(punto, nombre_objeto); // Insertar el vértice en el Kd-Tree
@@ -1038,12 +1038,12 @@ void v_cercano(int px, int py, int pz) {
             distancia += pow(puntoConsulta[i] - vertice_cercano->punto[i], 2);
         }
         distancia = sqrt(distancia);
-        
+
         std::cout << "El vértice más cercano es: (";
         for (auto& coord : vertice_cercano->punto) {
             std::cout << coord << " ";
         }
-        std::cout << ") del objeto: " << vertice_cercano->nombre_objeto 
+        std::cout << ") del objeto: " << vertice_cercano->nombre_objeto
                   << " con una distancia de: " << distancia << std::endl;
     } else {
         std::cout << "No se encontró un vértice cercano." << std::endl;
@@ -1066,9 +1066,9 @@ void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCIO
         return;
     }
 
-    
-    Vertice pmin; 
-    Vertice pmax; 
+
+    Vertice pmin;
+    Vertice pmax;
     std::vector<Vertice> esquinasCaja = {/* las 8 esquinas de la caja */};
 
     std::cout << "Los vértices del objeto " << nombreObjeto << " más cercanos a las esquinas de su caja envolvente son:" << std::endl;
@@ -1101,7 +1101,7 @@ void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCIO
 
 //////////////////////////////////COMPONENTE 3///////////////////////////////
 void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
-  // Aqui faltaria colocar la logica para encontrar el objeto y  
+  // Aqui faltaria colocar la logica para encontrar el objeto y
   // cualcular el valor de la distancia (valor_distancia) que conecta los vertices
 
 
@@ -1113,7 +1113,7 @@ void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
           std::cerr<<"Los índices de los vértices dados son iguales para el objeto "<<nombreObjeto<<std::endl;
 
       }*/
-    
+
     //No me dejaba comparar los indices de los vertices, por lo que no se como hacerlo y deje comentariado. wazaaaaaa
     /*if(i1==i2){//indices iguales
         std::cout<<"Los índices de los vértices dados son iguales"<<std::endl;
@@ -1129,18 +1129,18 @@ void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
 
 
 void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
-  // Aqui faltaria colocar la logica para encontrar el objeto y  
+  // Aqui faltaria colocar la logica para encontrar el objeto y
   // cualcular el valor de la distancia (valor_distancia) que conecta los vertices
 
 
 
   //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
 
-    //Verificacion si los indices estan dentro del objeto 
+    //Verificacion si los indices estan dentro del objeto
     // dentro de un if std::cerr<<" Algunos de los índices de vértices están fuera de rango para el objeto "<<nombreObjeto<<std::endl;
 
     //indice fuera del rango
-    
+
   if (nombreObjeto!="") {
       std::cout<<"La ruta mas corta que conecta el vertice "<<"(cordenada del vertice i1)"<<" con el centro del objeto "<<nombreObjeto<<", ubicado en "<<"cordenada(ctx,cty,ctz)"<<", pasa por:"<<"cordenada i1, v1,v2,...ct"<<" con una longitud de "<<"valor_distancia"<< std::endl;
   }/*else if(i1.!=""){//indices no existen
@@ -1186,7 +1186,7 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
   //para ser cargado en memoria y trabajar con este en el programa*/
   bool verificacionObjeto(std::string nombreArchivo, std::list<Objeto>& listadoObjetos){
       std::ifstream archivo(nombreArchivo);
-      
+
       if (!archivo.is_open()) {
           std::cout<< "El archivo "<<nombreArchivo <<"no se pudo abrir (Desde verificacion objeto)."<<std::endl;
           return false;
@@ -1194,13 +1194,13 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
 
       std::string linea;
 
-      //Se valida que el titulo del objeto no tenga 
+      //Se valida que el titulo del objeto no tenga
       //espacios en el primer renglón
       if (!std::getline(archivo, linea)) {
           std::cout<<"El archivo esta vacio (como mi corazon)"<<std::endl;
           return false;
       }
-      
+
       if (linea.find(' ') != std::string::npos) {
           std::cout<<"El nombre del objeto tiene espacios"<<std::endl;
           return false;
@@ -1213,7 +1213,7 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
       }
 
       //Se revisa que realmente se esté ingrensando un número de vertices
-      //que sea un entero positivo y que sea un número 
+      //que sea un entero positivo y que sea un número
       int numVertices;
       std::istringstream entrada(linea);
       if (!(entrada>>numVertices) || numVertices<=0) {
@@ -1260,4 +1260,3 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
       std::cout<<"Los datos del objeto son validos"<<std::endl;
       return true;
   }
-  

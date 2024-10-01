@@ -1,3 +1,6 @@
+#ifndef NODO_HXX
+#define NODO_HXX
+
 #include <vector>
 #include <string>
 
