@@ -11,7 +11,11 @@
   #include <cmath>
   #include "Objeto.h" // TAD objeto
   #include "Kdtree.hxx"
+<<<<<<< HEAD
   ///////////////////////////////////////////////COMPONENTE 1//////////////////////////////////////////
+=======
+  ///////////////////////////////////////////////COMPONENTE 1////////////////////////////////////////// 
+>>>>>>> 6149460be3ac7c31b4ca66455c68bf150dfab1f3
 
   /*Funciones encargadas de subir un objeto a memoria,
   //en este caso, verificacionObjeto()
@@ -1259,4 +1263,8 @@ void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
 
       std::cout<<"Los datos del objeto son validos"<<std::endl;
       return true;
+<<<<<<< HEAD
   }
+=======
+  }
+>>>>>>> 6149460be3ac7c31b4ca66455c68bf150dfab1f3
