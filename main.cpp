@@ -1051,10 +1051,10 @@ void v_cercano(int px, int py, int pz) {
 }
 
 
-void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCION ATT MIGUEL :3
+void v_cercanos_caja(std::string nombreObjeto) {
     // Buscar el objeto en la lista
     Objeto* obj = nullptr;
-    for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
+    for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); ++itObj) {
         if (itObj->obtenerNombreObjeto() == nombreObjeto) {
             obj = &(*itObj);
             break;
@@ -1062,35 +1062,50 @@ void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCIO
     }
 
     if (obj == nullptr) {
-        std::cerr << "El objeto " << nombreObjeto << " no ha sido encontrado en memoria" << std::endl;
+        std::cerr << "El objeto " << nombreObjeto << " no ha sido cargado en memoria." << std::endl;
         return;
     }
 
+    // Definir las esquinas de la caja envolvente
+    Vertice pmin = obj->obtenerPmin();  // Obtener vértice mínimo
+    Vertice pmax = obj->obtenerPmax();  // Obtener vértice máximo
 
-    Vertice pmin;
-    Vertice pmax;
-    std::vector<Vertice> esquinasCaja = {/* las 8 esquinas de la caja */};
+    std::vector<Vertice> esquinasCaja = {
+        Vertice(pmin.obtenerX(), pmin.obtenerY(), pmin.obtenerZ()),  // esquina 1
+        Vertice(pmax.obtenerX(), pmin.obtenerY(), pmin.obtenerZ()),  // esquina 2
+        Vertice(pmin.obtenerX(), pmax.obtenerY(), pmin.obtenerZ()),  // esquina 3
+        Vertice(pmax.obtenerX(), pmax.obtenerY(), pmin.obtenerZ()),  // esquina 4
+        Vertice(pmin.obtenerX(), pmin.obtenerY(), pmax.obtenerZ()),  // esquina 5
+        Vertice(pmax.obtenerX(), pmin.obtenerY(), pmax.obtenerZ()),  // esquina 6
+        Vertice(pmin.obtenerX(), pmax.obtenerY(), pmax.obtenerZ()),  // esquina 7
+        Vertice(pmax.obtenerX(), pmax.obtenerY(), pmax.obtenerZ())   // esquina 8
+    };
 
     std::cout << "Los vértices del objeto " << nombreObjeto << " más cercanos a las esquinas de su caja envolvente son:" << std::endl;
     std::cout << "Esquina\t\tVértice\t\tDistancia" << std::endl;
 
+    // Recorrer las esquinas de la caja y encontrar el vértice más cercano para cada una
     for (int i = 0; i < 8; ++i) {
         Vertice esquina = esquinasCaja[i];
         Vertice verticeCercano;
         double minDistancia = std::numeric_limits<double>::max();
 
-        for (std::list<Cara>::iterator itCara = obj->obtenerCaras().begin(); itCara != obj->obtenerCaras().end(); itCara++) {
-            for (std::list<Arista>::iterator itArista = itCara->obtenerListaAristas().begin(); itArista != itCara->obtenerListaAristas().end(); itArista++) {
-                for (std::list<Vertice>::iterator itVertice = itArista->obtenerListaVertices().begin(); itVertice != itArista->obtenerListaVertices().end(); itVertice++) {
-                    double distancia = sqrt(pow(esquina.obtenerX() - itVertice->obtenerX(), 2) + pow(esquina.obtenerY() - itVertice->obtenerY(), 2) + pow(esquina.obtenerZ() - itVertice->obtenerZ(), 2));
-                    if (distancia < minDistancia) {
-                        minDistancia = distancia;
-                        verticeCercano = *itVertice;
-                    }
-                }
+        // Recorrer todos los vértices del objeto para encontrar el más cercano a la esquina actual
+        std::list<Vertice> listaVertices = obj->obtenerVertices();
+        for (std::list<Vertice>::iterator itVertice = listaVertices.begin(); itVertice != listaVertices.end(); ++itVertice) {
+            double distancia = sqrt(
+                pow(esquina.obtenerX() - itVertice->obtenerX(), 2) +
+                pow(esquina.obtenerY() - itVertice->obtenerY(), 2) +
+                pow(esquina.obtenerZ() - itVertice->obtenerZ(), 2)
+            );
+
+            if (distancia < minDistancia) {
+                minDistancia = distancia;
+                verticeCercano = *itVertice;
             }
         }
 
+        // Mostrar los resultados
         std::cout << i + 1 << "\t\t(" << esquina.obtenerX() << ", " << esquina.obtenerY() << ", " << esquina.obtenerZ()
                   << ")\t\t" << verticeCercano.obtenerIndiceVer() << " (" << verticeCercano.obtenerX() << ", "
                   << verticeCercano.obtenerY() << ", " << verticeCercano.obtenerZ() << ")\t\t"
