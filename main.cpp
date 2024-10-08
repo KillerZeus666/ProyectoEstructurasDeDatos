@@ -43,7 +43,6 @@
   //de manera elegante y segura*/
   void salir();
 
-  ///////////HACE FALTA DEFINIR COMO SE VA A MANEJAR EL TEMA CUANDO EL PROGRAMA LLEVE A ESTE FLUJO////////////////////
   ///////////////////////////////////////////////COMPONENTE 2//////////////////////////////////////////
   void v_cercano(int px, int py, int pz, std::string nombreObjeto);
   void v_cercano(int px, int py, int pz);
