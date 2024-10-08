@@ -984,18 +984,70 @@ void envolvente() {
     exit(0);
   }
 //////////////////////////////////COMPONENTE 2///////////////////////////////
-void v_cercano(int px, int py, int pz, std::string nombreObjeto) {//ESTOY ARREGLANDO LA FUNCION ATT MIGUEL
-    // Aqui faltaria colocar la logica para encontrar el objeto y
-    // cualcular el valor de la distancia (valor_distancia)
-    //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
+void v_cercano(int px, int py, int pz, std::string nombre_objeto) {
+    // Verificar si el objeto existe en memoria recorriendo la lista manualmente
+    std::list<Objeto>::iterator itObj;
+    bool objetoEncontrado = false;
 
-  if (nombreObjeto!="") {
-      std::cout<<"El vertice i ("<<"cordenada(vx,vy,vz)"<<") del objeto "<<nombreObjeto<<" es el más cercano al punto ("<<px<<", "<<py<<", "<<pz<<"), a una distancia de: "<<"valor_distancia"<<std::endl;
-  } else {
-      std::cerr<<"El objeto "<<nombreObjeto<<" no ha sido encontrado en memoria"<<std::endl;
-  }
+    // Buscar el objeto en la lista de objetos cargados en memoria
+    for (itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); ++itObj) {
+        if (itObj->obtenerNombreObjeto() == nombre_objeto) {
+            objetoEncontrado = true;
+            break; // Salir del bucle al encontrar el objeto
+        }
+    }
+
+    if (!objetoEncontrado) {
+        // El objeto no fue encontrado
+        std::cerr << "El objeto " << nombre_objeto << " no ha sido cargado en memoria." << std::endl;
+        return;
+    }
+
+    // Crear un Kd-Tree para almacenar los vértices del objeto en 3D
+    KdTree<double> kdTree(3);
+
+    // Obtener las caras del objeto encontrado
+    std::list<Cara> caras = itObj->obtenerCaras();
+    for (std::list<Cara>::iterator itCara = caras.begin(); itCara != caras.end(); ++itCara) {
+        std::list<Arista> aristas = itCara->obtenerListaAristas();
+        for (std::list<Arista>::iterator itArista = aristas.begin(); itArista != aristas.end(); ++itArista) {
+            std::list<Vertice> vertices = itArista->obtenerListaVertices();
+            for (std::list<Vertice>::iterator itVertice = vertices.begin(); itVertice != vertices.end(); ++itVertice) {
+                // Convertir las coordenadas del vértice a un vector de doubles
+                std::vector<double> punto = {
+                    static_cast<double>(itVertice->obtenerX()),
+                    static_cast<double>(itVertice->obtenerY()),
+                    static_cast<double>(itVertice->obtenerZ())
+                };
+                // Insertar el vértice en el Kd-Tree
+                kdTree.insertar(punto, nombre_objeto);
+            }
+        }
+    }
+
+    // Buscar el vértice más cercano al punto dado
+    std::vector<double> puntoConsulta = { static_cast<double>(px), static_cast<double>(py), static_cast<double>(pz) };
+    Nodo<double>* vertice_cercano = kdTree.buscarMasCercano(puntoConsulta);
+
+    if (vertice_cercano != nullptr) {
+        // Calcular la distancia euclidiana al vértice más cercano
+        double distancia = 0.0;
+        for (unsigned int i = 0; i < 3; i++) {
+            distancia += pow(puntoConsulta[i] - vertice_cercano->punto[i], 2);
+        }
+        distancia = sqrt(distancia);
+
+        // Mostrar el vértice más cercano y la distancia
+        std::cout << "El vértice más cercano es: (" 
+                  << vertice_cercano->punto[0] << ", " 
+                  << vertice_cercano->punto[1] << ", " 
+                  << vertice_cercano->punto[2] << ") del objeto " 
+                  << nombre_objeto << " con una distancia de: " 
+                  << distancia << std::endl;
+    } else {
+        std::cout << "No se encontró un vértice cercano." << std::endl;
+    }
 }
-
 
 void v_cercano(int px, int py, int pz) {
     // Verificar si hay objetos cargados en memoria
@@ -1051,7 +1103,7 @@ void v_cercano(int px, int py, int pz) {
 }
 
 
-void v_cercanos_caja(std::string nombreObjeto) {//AUN ESTOY ARREGLANDO LA FUNCION ATT MIGUEL :3
+void v_cercanos_caja(std::string nombreObjeto) {
     // Buscar el objeto en la lista
     Objeto* obj = nullptr;
     for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
