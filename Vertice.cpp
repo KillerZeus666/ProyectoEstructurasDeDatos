@@ -8,7 +8,12 @@ Vertice::Vertice() {
     z = 0;
     indiceVer = 0;
 }
-
+//Constructor con parametros
+Vertice::Vertice(unsigned int x, unsigned int y, unsigned int z){
+        this->x = x;
+        this->y = y;
+        this->z = z;   
+    }
 // Getters
 unsigned int Vertice::obtenerX() {
     return x;

@@ -13,6 +13,7 @@ private:
 public:
     // Constructor
     Vertice();
+    Vertice(unsigned int x, unsigned int y, unsigned int z);
 
     // Getters
     unsigned int obtenerX();

@@ -1105,20 +1105,6 @@ void v_cercano(int px, int py, int pz) {
 
 
 // void v_cercanos_caja(std::string nombreObjeto) {
-//     // Buscar el objeto en la lista
-//     Objeto* obj = nullptr;
-//     for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
-//         if (itObj->obtenerNombreObjeto() == nombreObjeto) {
-//             obj = &(*itObj);
-//             break;
-//         }
-//     }
-
-//     if (obj == nullptr) {
-//         std::cerr << "El objeto " << nombreObjeto << " no ha sido encontrado en memoria" << std::endl;
-//         return;
-//     }
-
 
 //     Vertice pmin;
 //     Vertice pmax;
@@ -1151,6 +1137,23 @@ void v_cercano(int px, int py, int pz) {
 //     }
 // }
 void v_cercanos_caja(std::string nombreObjeto) {
+        // Buscar el objeto en la lista
+    Objeto* obj = nullptr;
+    for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
+        if (itObj->obtenerNombreObjeto() == nombreObjeto) {
+            obj = &(*itObj);
+            break;
+        }
+    }
+
+    if (obj == nullptr) {
+        std::cerr << "El objeto " << nombreObjeto << " no ha sido encontrado en memoria" << std::endl;
+        return;
+    }//else {
+    //Hasta aca ya lo probe y vamos bien
+            //std::cout << "El objeto se cargo correctamente:\n";
+   // }
+
     // Coordenadas obtenidas de los vértices de env_objetoPrueba
     unsigned int xmin = 0, xmax = 10;
     unsigned int ymin = 0, ymax = 10;
