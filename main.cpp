@@ -1137,7 +1137,7 @@ void v_cercano(int px, int py, int pz) {
 //     }
 // }
 void v_cercanos_caja(std::string nombreObjeto) {
-        // Buscar el objeto en la lista
+    // Buscar el objeto en la lista
     Objeto* obj = nullptr;
     for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
         if (itObj->obtenerNombreObjeto() == nombreObjeto) {
@@ -1149,27 +1149,14 @@ void v_cercanos_caja(std::string nombreObjeto) {
     if (obj == nullptr) {
         std::cerr << "El objeto " << nombreObjeto << " no ha sido encontrado en memoria" << std::endl;
         return;
-    }//else {
-    //Hasta aca ya lo probe y vamos bien
-            //std::cout << "El objeto se cargo correctamente:\n";
-   // }
+    }
 
-    // Coordenadas obtenidas de los vértices de env_objetoPrueba
-    unsigned int xmin = 0, xmax = 10;
-    unsigned int ymin = 0, ymax = 10;
-    unsigned int zmin = 0, zmax = 0;
-
-    // Crear un objeto de Vertice para llamar al método
-    Vertice vertice; 
-
-    // Calcular las esquinas de la caja envolvente usando los límites
-    std::vector<Vertice> esquinas = vertice.calcularEsquinasCaja(xmin, xmax, ymin, ymax, zmin, zmax);
+    // Obtener las esquinas de la caja envolvente desde el objeto
+    obj->obtenerEsquinas();  // Llama a este método para calcular las esquinas
 
     // Imprimir las esquinas calculadas
     std::cout << "Esquinas de la caja envolvente:\n";
-    for (size_t i = 0; i < esquinas.size(); ++i) {
-        esquinas[i].imprimirVertice();  // No es necesario asignar a una variable
-    }
+    obj->imprimirEsquinas();  // Imprime las esquinas del objeto
 }
 
 
