@@ -10,8 +10,8 @@
   #include <vector>
   #include <cmath>
   #include "Objeto.h" // TAD objeto
-  #include "Kdtree.hxx"
-  #include "ResultadoVertice.cpp"
+  #include "Kdtree.hxx" //TAD KDTREE
+  #include "ResultadoVertice.cpp" //TAD RESULTADO VERTICE (Vertice cercano y una distancia asociada)
 
   ///////////////////////////////////////////////COMPONENTE 1//////////////////////////////////////////
   /*Funciones encargadas de subir un objeto a memoria,
@@ -48,7 +48,6 @@
   void v_cercano(int px, int py, int pz, std::string nombreObjeto);
   void v_cercano(int px, int py, int pz);
   void v_cercanos_caja(std::string nombreObjeto);
- //void v_cercanos_caja(); 
   ResultadoVertice v_cercano_con_resultado(int px, int py, int pz, std::string nombre_objeto); 
 
 
@@ -1166,39 +1165,6 @@ ResultadoVertice v_cercano_con_resultado(int px, int py, int pz, std::string nom
     }
 }
 
-
-// void v_cercanos_caja(std::string nombreObjeto) {
-
-//     Vertice pmin;
-//     Vertice pmax;
-//     std::vector<Vertice> esquinasCaja = {/* las 8 esquinas de la caja */};
-
-//     std::cout << "Los vértices del objeto " << nombreObjeto << " más cercanos a las esquinas de su caja envolvente son:" << std::endl;
-//     std::cout << "Esquina\t\tVértice\t\tDistancia" << std::endl;
-
-//     for (int i = 0; i < 8; ++i) {
-//         Vertice esquina = esquinasCaja[i];
-//         Vertice verticeCercano;
-//         double minDistancia = std::numeric_limits<double>::max();
-
-//         for (std::list<Cara>::iterator itCara = obj->obtenerCaras().begin(); itCara != obj->obtenerCaras().end(); itCara++) {
-//             for (std::list<Arista>::iterator itArista = itCara->obtenerListaAristas().begin(); itArista != itCara->obtenerListaAristas().end(); itArista++) {
-//                 for (std::list<Vertice>::iterator itVertice = itArista->obtenerListaVertices().begin(); itVertice != itArista->obtenerListaVertices().end(); itVertice++) {
-//                     double distancia = sqrt(pow(esquina.obtenerX() - itVertice->obtenerX(), 2) + pow(esquina.obtenerY() - itVertice->obtenerY(), 2) + pow(esquina.obtenerZ() - itVertice->obtenerZ(), 2));
-//                     if (distancia < minDistancia) {
-//                         minDistancia = distancia;
-//                         verticeCercano = *itVertice;
-//                     }
-//                 }
-//             }
-//         }
-
-//         std::cout << i + 1 << "\t\t(" << esquina.obtenerX() << ", " << esquina.obtenerY() << ", " << esquina.obtenerZ()
-//                   << ")\t\t" << verticeCercano.obtenerIndiceVer() << " (" << verticeCercano.obtenerX() << ", "
-//                   << verticeCercano.obtenerY() << ", " << verticeCercano.obtenerZ() << ")\t\t"
-//                   << minDistancia << std::endl;
-//     }
-// }
 void v_cercanos_caja(std::string nombreObjeto) {
     // Buscar el objeto en la lista
     Objeto* obj = nullptr;
@@ -1220,7 +1186,7 @@ void v_cercanos_caja(std::string nombreObjeto) {
     // Imprimir la cabecera de la tabla
     std::cout << "(Resultado exitoso) Los vértices del objeto " << nombreObjeto 
               << " más cercanos a las esquinas de su caja envolvente son:\n";
-    std::cout << "Esquina Vertice Distancia\n";
+    std::cout << "Esquina     Vertice     Distancia\n";
 
     // Iterar sobre cada esquina y llamar a v_cercano_con_resultado
     for (int i = 0; i < esquinas.size(); ++i) {
@@ -1228,7 +1194,7 @@ void v_cercanos_caja(std::string nombreObjeto) {
 
         // Llamar a v_cercano_con_resultado y capturar el vértice cercano y la distancia
         double distancia;
-        ResultadoVertice vertice_cercano = v_cercano_con_resultado(esquina.obtenerX(), esquina.obtenerY(), esquina.obtenerZ(), nombreObjeto); // Asegúrate de usar el nombre correcto
+        ResultadoVertice vertice_cercano = v_cercano_con_resultado(esquina.obtenerX(), esquina.obtenerY(), esquina.obtenerZ(), nombreObjeto); 
         
         // Imprimir el resultado en el formato requerido
         std::cout << (i + 1) << " (" 
