@@ -47,6 +47,7 @@
   void v_cercano(int px, int py, int pz, std::string nombreObjeto);
   void v_cercano(int px, int py, int pz);
   void v_cercanos_caja(std::string nombreObjeto);
+ //void v_cercanos_caja(); 
 
   ///////////////////////////////////////////////COMPONENTE 3//////////////////////////////////////////
   void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto);
@@ -163,7 +164,7 @@ std::list<Objeto> objetosPrograma;
             } else if (comandoUsuario == "v_cercanos_caja") {
                 if (argumentosUsuario.size() == 1) {
                     std::string nombreObjeto = argumentosUsuario[0];
-                    v_cercanos_caja(nombreObjeto);
+                  v_cercanos_caja(nombreObjeto);
                 } else {
                     std::cout << "Error: Uso incorrecto. Use 'ayuda v_cercanos_caja' para más informacion." << std::endl;
                 }
@@ -1103,54 +1104,73 @@ void v_cercano(int px, int py, int pz) {
 
 
 
+// void v_cercanos_caja(std::string nombreObjeto) {
+//     // Buscar el objeto en la lista
+//     Objeto* obj = nullptr;
+//     for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
+//         if (itObj->obtenerNombreObjeto() == nombreObjeto) {
+//             obj = &(*itObj);
+//             break;
+//         }
+//     }
+
+//     if (obj == nullptr) {
+//         std::cerr << "El objeto " << nombreObjeto << " no ha sido encontrado en memoria" << std::endl;
+//         return;
+//     }
+
+
+//     Vertice pmin;
+//     Vertice pmax;
+//     std::vector<Vertice> esquinasCaja = {/* las 8 esquinas de la caja */};
+
+//     std::cout << "Los vértices del objeto " << nombreObjeto << " más cercanos a las esquinas de su caja envolvente son:" << std::endl;
+//     std::cout << "Esquina\t\tVértice\t\tDistancia" << std::endl;
+
+//     for (int i = 0; i < 8; ++i) {
+//         Vertice esquina = esquinasCaja[i];
+//         Vertice verticeCercano;
+//         double minDistancia = std::numeric_limits<double>::max();
+
+//         for (std::list<Cara>::iterator itCara = obj->obtenerCaras().begin(); itCara != obj->obtenerCaras().end(); itCara++) {
+//             for (std::list<Arista>::iterator itArista = itCara->obtenerListaAristas().begin(); itArista != itCara->obtenerListaAristas().end(); itArista++) {
+//                 for (std::list<Vertice>::iterator itVertice = itArista->obtenerListaVertices().begin(); itVertice != itArista->obtenerListaVertices().end(); itVertice++) {
+//                     double distancia = sqrt(pow(esquina.obtenerX() - itVertice->obtenerX(), 2) + pow(esquina.obtenerY() - itVertice->obtenerY(), 2) + pow(esquina.obtenerZ() - itVertice->obtenerZ(), 2));
+//                     if (distancia < minDistancia) {
+//                         minDistancia = distancia;
+//                         verticeCercano = *itVertice;
+//                     }
+//                 }
+//             }
+//         }
+
+//         std::cout << i + 1 << "\t\t(" << esquina.obtenerX() << ", " << esquina.obtenerY() << ", " << esquina.obtenerZ()
+//                   << ")\t\t" << verticeCercano.obtenerIndiceVer() << " (" << verticeCercano.obtenerX() << ", "
+//                   << verticeCercano.obtenerY() << ", " << verticeCercano.obtenerZ() << ")\t\t"
+//                   << minDistancia << std::endl;
+//     }
+// }
 void v_cercanos_caja(std::string nombreObjeto) {
-    // Buscar el objeto en la lista
-    Objeto* obj = nullptr;
-    for (std::list<Objeto>::iterator itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); itObj++) {
-        if (itObj->obtenerNombreObjeto() == nombreObjeto) {
-            obj = &(*itObj);
-            break;
-        }
-    }
+    // Coordenadas obtenidas de los vértices de env_objetoPrueba
+    unsigned int xmin = 0, xmax = 10;
+    unsigned int ymin = 0, ymax = 10;
+    unsigned int zmin = 0, zmax = 0;
 
-    if (obj == nullptr) {
-        std::cerr << "El objeto " << nombreObjeto << " no ha sido encontrado en memoria" << std::endl;
-        return;
-    }
+    // Crear un objeto de Vertice para llamar al método
+    Vertice vertice; 
 
+    // Calcular las esquinas de la caja envolvente usando los límites
+    std::vector<Vertice> esquinas = vertice.calcularEsquinasCaja(xmin, xmax, ymin, ymax, zmin, zmax);
 
-    Vertice pmin;
-    Vertice pmax;
-    std::vector<Vertice> esquinasCaja = {/* las 8 esquinas de la caja */};
-
-    std::cout << "Los vértices del objeto " << nombreObjeto << " más cercanos a las esquinas de su caja envolvente son:" << std::endl;
-    std::cout << "Esquina\t\tVértice\t\tDistancia" << std::endl;
-
-    for (int i = 0; i < 8; ++i) {
-        Vertice esquina = esquinasCaja[i];
-        Vertice verticeCercano;
-        double minDistancia = std::numeric_limits<double>::max();
-
-        for (std::list<Cara>::iterator itCara = obj->obtenerCaras().begin(); itCara != obj->obtenerCaras().end(); itCara++) {
-            for (std::list<Arista>::iterator itArista = itCara->obtenerListaAristas().begin(); itArista != itCara->obtenerListaAristas().end(); itArista++) {
-                for (std::list<Vertice>::iterator itVertice = itArista->obtenerListaVertices().begin(); itVertice != itArista->obtenerListaVertices().end(); itVertice++) {
-                    double distancia = sqrt(pow(esquina.obtenerX() - itVertice->obtenerX(), 2) + pow(esquina.obtenerY() - itVertice->obtenerY(), 2) + pow(esquina.obtenerZ() - itVertice->obtenerZ(), 2));
-                    if (distancia < minDistancia) {
-                        minDistancia = distancia;
-                        verticeCercano = *itVertice;
-                    }
-                }
-            }
-        }
-
-        std::cout << i + 1 << "\t\t(" << esquina.obtenerX() << ", " << esquina.obtenerY() << ", " << esquina.obtenerZ()
-                  << ")\t\t" << verticeCercano.obtenerIndiceVer() << " (" << verticeCercano.obtenerX() << ", "
-                  << verticeCercano.obtenerY() << ", " << verticeCercano.obtenerZ() << ")\t\t"
-                  << minDistancia << std::endl;
+    // Imprimir las esquinas calculadas
+    std::cout << "Esquinas de la caja envolvente:\n";
+    for (size_t i = 0; i < esquinas.size(); ++i) {
+        esquinas[i].imprimirVertice();  // No es necesario asignar a una variable
     }
 }
 
 
+ 
 //////////////////////////////////COMPONENTE 3///////////////////////////////
 void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
   // Aqui faltaria colocar la logica para encontrar el objeto y
