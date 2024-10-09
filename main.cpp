@@ -11,6 +11,7 @@
   #include <cmath>
   #include "Objeto.h" // TAD objeto
   #include "Kdtree.hxx"
+  #include "ResultadoVertice.cpp"
 
   ///////////////////////////////////////////////COMPONENTE 1//////////////////////////////////////////
   /*Funciones encargadas de subir un objeto a memoria,
@@ -48,6 +49,8 @@
   void v_cercano(int px, int py, int pz);
   void v_cercanos_caja(std::string nombreObjeto);
  //void v_cercanos_caja(); 
+  ResultadoVertice v_cercano_con_resultado(int px, int py, int pz, std::string nombre_objeto); 
+
 
   ///////////////////////////////////////////////COMPONENTE 3//////////////////////////////////////////
   void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto);
@@ -1101,7 +1104,67 @@ void v_cercano(int px, int py, int pz) {
         std::cout << "No se encontró un vértice cercano." << std::endl;
     }
 }
+//funcion v_cercano_ que retorna un vertice y una distancia asociada a un punto 
+ResultadoVertice v_cercano_con_resultado(int px, int py, int pz, std::string nombre_objeto) {
+    // Verificar si el objeto existe en memoria recorriendo la lista manualmente
+    std::list<Objeto>::iterator itObj;
+    bool objetoEncontrado = false;
 
+    // Buscar el objeto en la lista de objetos cargados en memoria
+    for (itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); ++itObj) {
+        if (itObj->obtenerNombreObjeto() == nombre_objeto) {
+            objetoEncontrado = true;
+            break; // Salir del bucle al encontrar el objeto
+        }
+    }
+
+    if (!objetoEncontrado) {
+        // El objeto no fue encontrado
+        std::cerr << "El objeto " << nombre_objeto << " no ha sido cargado en memoria." << std::endl;
+        return ResultadoVertice(Vertice(), 0.0); // Retornar un ResultadoVertice vacío
+    }
+
+    // Crear un Kd-Tree para almacenar los vértices del objeto en 3D
+    KdTree<double> kdTree(3);
+
+    // Obtener las caras del objeto encontrado
+    std::list<Cara> caras = itObj->obtenerCaras();
+    for (std::list<Cara>::iterator itCara = caras.begin(); itCara != caras.end(); ++itCara) {
+        std::list<Arista> aristas = itCara->obtenerListaAristas();
+        for (std::list<Arista>::iterator itArista = aristas.begin(); itArista != aristas.end(); ++itArista) {
+            std::list<Vertice> vertices = itArista->obtenerListaVertices();
+            for (std::list<Vertice>::iterator itVertice = vertices.begin(); itVertice != vertices.end(); ++itVertice) {
+                // Convertir las coordenadas del vértice a un vector de doubles
+                std::vector<double> punto = {
+                    static_cast<double>(itVertice->obtenerX()),
+                    static_cast<double>(itVertice->obtenerY()),
+                    static_cast<double>(itVertice->obtenerZ())
+                };
+                // Insertar el vértice en el Kd-Tree
+                kdTree.insertar(punto, nombre_objeto);
+            }
+        }
+    }
+
+    // Buscar el vértice más cercano al punto dado
+    std::vector<double> puntoConsulta = { static_cast<double>(px), static_cast<double>(py), static_cast<double>(pz) };
+    Nodo<double>* vertice_cercano = kdTree.buscarMasCercano(puntoConsulta);
+    double distancia = 0.0; // Inicializar distancia
+
+    if (vertice_cercano != nullptr) {
+        // Calcular la distancia euclidiana al vértice más cercano
+        for (unsigned int i = 0; i < 3; i++) {
+            distancia += pow(puntoConsulta[i] - vertice_cercano->punto[i], 2);
+        }
+        distancia = sqrt(distancia);
+
+        // Crear un vértice con las coordenadas del vértice más cercano
+        Vertice v_cercano(vertice_cercano->punto[0], vertice_cercano->punto[1], vertice_cercano->punto[2]);
+        return ResultadoVertice(v_cercano, distancia); // Retornar el resultado
+    } else {
+        return ResultadoVertice(Vertice(), 0.0); // Retornar un ResultadoVertice vacío si no se encuentra un vértice
+    }
+}
 
 
 // void v_cercanos_caja(std::string nombreObjeto) {
@@ -1147,21 +1210,39 @@ void v_cercanos_caja(std::string nombreObjeto) {
     }
 
     if (obj == nullptr) {
-        std::cerr << "El objeto " << nombreObjeto << " no ha sido encontrado en memoria" << std::endl;
+        std::cerr << "(Objeto no existe) El objeto " << nombreObjeto << " no ha sido cargado en memoria." << std::endl;
         return;
     }
 
-    // Obtener las esquinas de la caja envolvente desde el objeto
-    obj->obtenerEsquinas();  // Llama a este método para calcular las esquinas
+    // Obtener las esquinas de la caja envolvente
+    std::vector<Vertice> esquinas = obj->obtenerEsquinas();
 
-    // Imprimir las esquinas calculadas
-    std::cout << "Esquinas de la caja envolvente:\n";
-    obj->imprimirEsquinas();  // Imprime las esquinas del objeto
+    // Imprimir la cabecera de la tabla
+    std::cout << "(Resultado exitoso) Los vértices del objeto " << nombreObjeto 
+              << " más cercanos a las esquinas de su caja envolvente son:\n";
+    std::cout << "Esquina Vertice Distancia\n";
+
+    // Iterar sobre cada esquina y llamar a v_cercano_con_resultado
+    for (int i = 0; i < esquinas.size(); ++i) {
+        Vertice esquina = esquinas[i];
+
+        // Llamar a v_cercano_con_resultado y capturar el vértice cercano y la distancia
+        double distancia;
+        ResultadoVertice vertice_cercano = v_cercano_con_resultado(esquina.obtenerX(), esquina.obtenerY(), esquina.obtenerZ(), nombreObjeto); // Asegúrate de usar el nombre correcto
+        
+        // Imprimir el resultado en el formato requerido
+        std::cout << (i + 1) << " (" 
+                  << esquina.obtenerX() << ", " 
+                  << esquina.obtenerY() << ", " 
+                  << esquina.obtenerZ() << ") "
+                  << "i" << (i + 1) << " (" 
+                  << vertice_cercano.obtenerX() << ", " 
+                  << vertice_cercano.obtenerY() << ", " 
+                  << vertice_cercano.obtenerZ() << ") "
+                  << distancia << "\n";
+    }
 }
 
-
- 
-//////////////////////////////////COMPONENTE 3///////////////////////////////
 void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
   // Aqui faltaria colocar la logica para encontrar el objeto y
   // cualcular el valor de la distancia (valor_distancia) que conecta los vertices
@@ -1188,6 +1269,7 @@ void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
 
   }
 }
+
 
 
 void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {

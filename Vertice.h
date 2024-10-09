@@ -20,7 +20,7 @@ public:
     unsigned int obtenerY();
     unsigned int obtenerZ();
     unsigned int obtenerIndiceVer();
-
+    
     // Setters
     void fijarX(unsigned int x);
     void fijarY(unsigned int y);

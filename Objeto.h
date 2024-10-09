@@ -28,7 +28,7 @@ public:
     unsigned int contarCaras();
 
     void imprimirObjeto();
-    void obtenerEsquinas();  // Método para obtener las esquinas del objeto envolvente
+    std::vector<Vertice> obtenerEsquinas() ;
     void imprimirEsquinas();  // Método para imprimir las esquinas
 };
 

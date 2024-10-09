@@ -58,8 +58,8 @@ void Objeto::imprimirObjeto() {
         cara.imprimirCara();  // Asegúrate de que el método imprimirCara esté definido en la clase Cara.
     }
 }
-
-void Objeto::obtenerEsquinas() {
+std::vector<Vertice> Objeto::obtenerEsquinas() {
+    std::vector<Vertice> esquinas(8);
     float xMin = std::numeric_limits<float>::max();
     float xMax = std::numeric_limits<float>::lowest();
     float yMin = std::numeric_limits<float>::max();
@@ -97,6 +97,8 @@ void Objeto::obtenerEsquinas() {
     esquinas[5] = Vertice(xMax, yMin, zMax); // Esquina 6
     esquinas[6] = Vertice(xMax, yMax, zMax); // Esquina 7
     esquinas[7] = Vertice(xMin, yMax, zMax); // Esquina 8
+
+    return esquinas; // Retorna las esquinas
 }
 
 void Objeto::imprimirEsquinas() {
