@@ -1091,8 +1091,8 @@ void v_cercano(int px, int py, int pz) {
         distancia = sqrt(distancia);
 
         std::cout << "El vértice más cercano es: (";
-        for (auto& coord : vertice_cercano->punto) {
-            std::cout << coord << " ";
+        for (int i = 0; i < 3; ++i) {
+            std::cout << vertice_cercano->punto[i] << " ";
         }
         std::cout << ") del objeto: " << vertice_cercano->nombre_objeto
                   << " con una distancia de: " << distancia << std::endl;
@@ -1100,6 +1100,7 @@ void v_cercano(int px, int py, int pz) {
         std::cout << "No se encontró un vértice cercano." << std::endl;
     }
 }
+
 
 
 void v_cercanos_caja(std::string nombreObjeto) {
