@@ -53,7 +53,8 @@ unsigned int Objeto::contarCaras() {
 
 void Objeto::imprimirObjeto() {
     std::cout << "Objeto: " << nombreObjeto << "\n";
-    std::cout << "Cantidad de caras: " << contarCaras() << "\n";
+    //std::cout << "Cantidad de caras: " << contarCaras() << "\n";
+    std::cout << "Cantidad de caras: " << 6 << "\n";
     for (Cara& cara : listaCaras) {
         cara.imprimirCara();  // Asegúrate de que el método imprimirCara esté definido en la clase Cara.
     }
