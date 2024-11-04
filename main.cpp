@@ -1209,164 +1209,141 @@ void v_cercanos_caja(std::string nombreObjeto) {
     }
 }
 
-void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
-  // Aqui faltaria colocar la logica para encontrar el objeto y
-  // cualcular el valor de la distancia (valor_distancia) que conecta los vertices
+    void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
+    /*En progreso por Natalia*/
+
+
+    }
+
+    void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
+    // Aqui faltaria colocar la logica para encontrar el objeto y
+    // cualcular el valor de la distancia (valor_distancia) que conecta los vertices
 
 
 
-  //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
+    //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
 
-  /* Verificar si los índices de los vértices son iguales
-      if (i1 == i2) {
-          std::cerr<<"Los índices de los vértices dados son iguales para el objeto "<<nombreObjeto<<std::endl;
+        //Verificacion si los indices estan dentro del objeto
+        // dentro de un if std::cerr<<" Algunos de los índices de vértices están fuera de rango para el objeto "<<nombreObjeto<<std::endl;
 
-      }*/
+        //indice fuera del rango
 
-    //No me dejaba comparar los indices de los vertices, por lo que no se como hacerlo y deje comentariado. wazaaaaaa
-    /*if(i1==i2){//indices iguales
-        std::cout<<"Los índices de los vértices dados son iguales"<<std::endl;
-    } else if(i1!=""&&i2!=""){//indices no existen
-        std::cout<<"Algunos de los indices de vertices estan fuera de rango para el objeto "<<nombreObjeto<<std::endl;
-    } else*/ if (nombreObjeto!="") {
-      std::cout<<"La ruta mas corta que conecta los vertices "<<"(coordenada i1 del objeto)"<<" hasta "<<"(cordenada i2 del vertice)"<<" del objeto "<<nombreObjeto<<", pasa por:"<<"(co ordenada i1 , v1,v2,vn, i2..."<<" con una longitud de: "<<"valor_distancia"<<std::endl;
-  } else {
-      std::cerr<<"El objeto "<<nombreObjeto<<" no ha sido cargado en memoria."<<std::endl;
+    if (nombreObjeto!="") {
+        std::cout<<"La ruta mas corta que conecta el vertice "<<"(cordenada del vertice i1)"<<" con el centro del objeto "<<nombreObjeto<<", ubicado en "<<"cordenada(ctx,cty,ctz)"<<", pasa por:"<<"cordenada i1, v1,v2,...ct"<<" con una longitud de "<<"valor_distancia"<< std::endl;
+    }/*else if(i1.!=""){//indices no existen
+        std::cout<<"El indice de vertice esta fuera de rango para el objeto "<<nombreObjeto<<std::endl;
+    }*/ else {
+        std::cerr<<"El objeto "<<nombreObjeto<<" no ha sido cargado en memoria."<<std::endl;
 
-  }
-}
+    }
+    }
 
 
-
-void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
-  // Aqui faltaria colocar la logica para encontrar el objeto y
-  // cualcular el valor de la distancia (valor_distancia) que conecta los vertices
-
-
-
-  //Implementación mensaje de exito o fracaso en dado caso que se encuentre el objeto
-
-    //Verificacion si los indices estan dentro del objeto
-    // dentro de un if std::cerr<<" Algunos de los índices de vértices están fuera de rango para el objeto "<<nombreObjeto<<std::endl;
-
-    //indice fuera del rango
-
-  if (nombreObjeto!="") {
-      std::cout<<"La ruta mas corta que conecta el vertice "<<"(cordenada del vertice i1)"<<" con el centro del objeto "<<nombreObjeto<<", ubicado en "<<"cordenada(ctx,cty,ctz)"<<", pasa por:"<<"cordenada i1, v1,v2,...ct"<<" con una longitud de "<<"valor_distancia"<< std::endl;
-  }/*else if(i1.!=""){//indices no existen
-      std::cout<<"El indice de vertice esta fuera de rango para el objeto "<<nombreObjeto<<std::endl;
-  }*/ else {
-      std::cerr<<"El objeto "<<nombreObjeto<<" no ha sido cargado en memoria."<<std::endl;
-
-  }
-}
+    //////////////////////////////////FUNCIONES AUXILIARES///////////////////////////////
+    /*Función de búsqueda auxiliar para encontrar un objeto tipo Objeto (malla) por medio de un ciclo for, si no encuentra nada,
+    //se devuelve un objeto vacio*/
+        Objeto encontrarObjeto(std::string nombreObjeto, std::list<Objeto>& listadoObjetos) {
+            // Recorrer la lista usando un iterador
+            for (auto it = listadoObjetos.begin(); it != listadoObjetos.end(); ++it) {
+                if (it->obtenerNombreObjeto() == nombreObjeto) {
+                    return *it;
+                }
+            }
+            // Retornar un objeto vacío si no se encuentra el objeto buscado
+            return Objeto();
+        }
 
 
-//////////////////////////////////FUNCIONES AUXILIARES///////////////////////////////
-  /*Función de búsqueda auxiliar para encontrar un objeto tipo Objeto (malla) por medio de un ciclo for, si no encuentra nada,
-  //se devuelve un objeto vacio*/
-      Objeto encontrarObjeto(std::string nombreObjeto, std::list<Objeto>& listadoObjetos) {
-          // Recorrer la lista usando un iterador
-          for (auto it = listadoObjetos.begin(); it != listadoObjetos.end(); ++it) {
-              if (it->obtenerNombreObjeto() == nombreObjeto) {
-                  return *it;
-              }
-          }
-          // Retornar un objeto vacío si no se encuentra el objeto buscado
-          return Objeto();
-      }
+    /*Función auxiliar para la impresión de objetos encontrados //provisionalmente en un vector(con fines de interacción de usuario),
+    //donde se emplea la biblioteca vector, suponiendo que hay un array //estático y no dinámico que contiene a todos los objetos tipo      //Objetocargados en memoria*/
+    void imprimirListado(std::list<Objeto>& listadoObjetos){
+        std::cout<<std::endl;
 
+        std::list<Objeto>::iterator itListado;
+        itListado = listadoObjetos.begin();
 
-  /*Función auxiliar para la impresión de objetos encontrados //provisionalmente en un vector(con fines de interacción de usuario),
-  //donde se emplea la biblioteca vector, suponiendo que hay un array //estático y no dinámico que contiene a todos los objetos tipo      //Objetocargados en memoria*/
-  void imprimirListado(std::list<Objeto>& listadoObjetos){
-      std::cout<<std::endl;
+        for(;itListado!=listadoObjetos.end(); itListado++){
+            std::cout<<"______________________________________"<<std::endl;
+            itListado->imprimirObjeto();
+            std::cout<<std::endl;
+        }
+    }
 
-      std::list<Objeto>::iterator itListado;
-      itListado = listadoObjetos.begin();
+    /*Función auxiliar encargada de verificar si un objeto es válido
+    //para ser cargado en memoria y trabajar con este en el programa*/
+    bool verificacionObjeto(std::string nombreArchivo, std::list<Objeto>& listadoObjetos){
+        std::ifstream archivo(nombreArchivo);
 
-      for(;itListado!=listadoObjetos.end(); itListado++){
-          std::cout<<"______________________________________"<<std::endl;
-          itListado->imprimirObjeto();
-          std::cout<<std::endl;
-      }
-  }
+        if (!archivo.is_open()) {
+            std::cout<< "El archivo "<<nombreArchivo <<"no se pudo abrir (Desde verificacion objeto)."<<std::endl;
+            return false;
+        }
 
-  /*Función auxiliar encargada de verificar si un objeto es válido
-  //para ser cargado en memoria y trabajar con este en el programa*/
-  bool verificacionObjeto(std::string nombreArchivo, std::list<Objeto>& listadoObjetos){
-      std::ifstream archivo(nombreArchivo);
+        std::string linea;
 
-      if (!archivo.is_open()) {
-          std::cout<< "El archivo "<<nombreArchivo <<"no se pudo abrir (Desde verificacion objeto)."<<std::endl;
-          return false;
-      }
+        //Se valida que el titulo del objeto no tenga
+        //espacios en el primer renglón
+        if (!std::getline(archivo, linea)) {
+            std::cout<<"El archivo esta vacio (como mi corazon)"<<std::endl;
+            return false;
+        }
 
-      std::string linea;
+        if (linea.find(' ') != std::string::npos) {
+            std::cout<<"El nombre del objeto tiene espacios"<<std::endl;
+            return false;
+        }
 
-      //Se valida que el titulo del objeto no tenga
-      //espacios en el primer renglón
-      if (!std::getline(archivo, linea)) {
-          std::cout<<"El archivo esta vacio (como mi corazon)"<<std::endl;
-          return false;
-      }
+        //Revisar que está el número de vertices
+        if (!std::getline(archivo, linea)) {
+            std::cout<<"No existe el numero de vertices"<<std::endl;
+            return false;
+        }
 
-      if (linea.find(' ') != std::string::npos) {
-          std::cout<<"El nombre del objeto tiene espacios"<<std::endl;
-          return false;
-      }
+        //Se revisa que realmente se esté ingrensando un número de vertices
+        //que sea un entero positivo y que sea un número
+        int numVertices;
+        std::istringstream entrada(linea);
+        if (!(entrada>>numVertices) || numVertices<=0) {
+            std::cout<<"El numero de vertices no es un numero o no es una entrada valida"<<std::endl;
+            return false;
+        }
 
-      //Revisar que está el número de vertices
-      if (!std::getline(archivo, linea)) {
-          std::cout<<"No existe el numero de vertices"<<std::endl;
-          return false;
-      }
+        //Se valida que existan siempre las 3 coordenadas insertadas en los vertices
+        for (int i=0; i<numVertices; i++) {
+            if (!std::getline(archivo, linea)){
+                //Se revisa primero que en la siguiente línea hayan vertices
+                std::cout<<"No hay vertices en el archivo"<<std::endl;
+                return false;
+            }
 
-      //Se revisa que realmente se esté ingrensando un número de vertices
-      //que sea un entero positivo y que sea un número
-      int numVertices;
-      std::istringstream entrada(linea);
-      if (!(entrada>>numVertices) || numVertices<=0) {
-          std::cout<<"El numero de vertices no es un numero o no es una entrada valida"<<std::endl;
-          return false;
-      }
+            //Se va tomando cada línea y verificando que se encuentren todas las coordenadas
+            std::istringstream lineaVertices(linea);
+            int x, y, z;
+            if (!(lineaVertices>>x>>y>>z)) {
+                std::cout<<"Error: El renglon "<<i+3<<" no se tienen las coordenadas necesarias"<<std::endl;
+                return false;
+            }
+        }
 
-      //Se valida que existan siempre las 3 coordenadas insertadas en los vertices
-      for (int i=0; i<numVertices; i++) {
-          if (!std::getline(archivo, linea)){
-              //Se revisa primero que en la siguiente línea hayan vertices
-              std::cout<<"No hay vertices en el archivo"<<std::endl;
-              return false;
-          }
+        //Se activa un booleando que nos indica si el
+        //archivo termina en menos -1
+        bool hayMenos1 = false;
+        while(std::getline(archivo, linea)){
+            //Nos vamos a la línea final en donde se toma el valor
+            std::istringstream lineaFinal(linea);
+            int valor;
+            //En caso de que la línea sea de menos 1, se activa el booleano
+            if(lineaFinal>>valor && valor==-1) {
+                hayMenos1 = true;
+                break;
+            }
+        }
 
-          //Se va tomando cada línea y verificando que se encuentren todas las coordenadas
-          std::istringstream lineaVertices(linea);
-          int x, y, z;
-          if (!(lineaVertices>>x>>y>>z)) {
-              std::cout<<"Error: El renglon "<<i+3<<" no se tienen las coordenadas necesarias"<<std::endl;
-              return false;
-          }
-      }
+        if (hayMenos1==false) {
+            std::cout<<"El archivo no termina en -1"<<std::endl;
+            return false;
+        }
 
-      //Se activa un booleando que nos indica si el
-      //archivo termina en menos -1
-      bool hayMenos1 = false;
-      while(std::getline(archivo, linea)){
-          //Nos vamos a la línea final en donde se toma el valor
-          std::istringstream lineaFinal(linea);
-          int valor;
-          //En caso de que la línea sea de menos 1, se activa el booleano
-          if(lineaFinal>>valor && valor==-1) {
-              hayMenos1 = true;
-              break;
-          }
-      }
-
-      if (hayMenos1==false) {
-          std::cout<<"El archivo no termina en -1"<<std::endl;
-          return false;
-      }
-
-      std::cout<<"Los datos del objeto son validos"<<std::endl;
-      return true;
-  }
+        std::cout<<"Los datos del objeto son validos"<<std::endl;
+        return true;
+    }

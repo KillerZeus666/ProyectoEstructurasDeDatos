@@ -2,6 +2,8 @@
 #define VERTICE_H
 
 #include <vector>
+#include <ostream>
+#include <iostream>
 
 class Vertice {
 private:
@@ -29,6 +31,12 @@ public:
 
     // Método para imprimir el vértice
     void imprimirVertice();
+
+    /*Sobrecarga para operador de igualdad*/
+    friend bool operator==(const Vertice& v1, const Vertice& v2);
+
+    /*Sobrecarga para operador de salida*/
+    friend std::ostream& operator<<(std::ostream& os, const Vertice& vertice);
 
     // Método para calcular las esquinas de la caja envolvente
     std::vector<Vertice> calcularEsquinasCaja(unsigned int xmin, unsigned int xmax, unsigned int ymin, unsigned int ymax, unsigned int zmin, unsigned int zmax);
