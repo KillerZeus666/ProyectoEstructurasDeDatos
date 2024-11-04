@@ -1,5 +1,6 @@
 #include "Vertice.h"
 #include <iostream>
+#include <ostream>
 
 // Constructor vacío
 Vertice::Vertice() {
@@ -67,4 +68,14 @@ std::vector<Vertice> Vertice::calcularEsquinasCaja(unsigned int xmin, unsigned i
     esquinas[7].fijarX(xmin); esquinas[7].fijarY(ymax); esquinas[7].fijarZ(zmax);
 
     return esquinas;
+}
+
+bool operator==(const Vertice& v1, const Vertice& v2) {
+    return v1.indiceVer == v2.indiceVer;
+}
+
+std::ostream& operator<<(std::ostream& os, const Vertice& vertice) {
+    os << "Indice: " << vertice.indiceVer << ", Coordenadas: (" 
+       << vertice.x << ", " << vertice.y << ", " << vertice.z << ")";
+    return os;
 }
