@@ -379,7 +379,7 @@
                 }
                 /*Se accede al peso y se imrpime, y se cambia la bandera de primera
                 //impresión*/
-                std::cout << vertices[arista.first]<<"(peso: "<<arista.second<<")";
+                std::cout<<vertices[arista.first]<<"(peso: "<<arista.second<<")";
                 primero = false; 
             }
             std::cout<<std::endl; 

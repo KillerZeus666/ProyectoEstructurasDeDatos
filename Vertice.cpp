@@ -10,42 +10,42 @@ Vertice::Vertice() {
     indiceVer = 0;
 }
 //Constructor con parametros
-Vertice::Vertice(unsigned int x, unsigned int y, unsigned int z){
+Vertice::Vertice(int x, int y, int z){
         this->x = x;
         this->y = y;
         this->z = z;   
     }
 // Getters
-unsigned int Vertice::obtenerX() {
+ int Vertice::obtenerX() {
     return x;
 }
 
-unsigned int Vertice::obtenerY() {
+ int Vertice::obtenerY() {
     return y;
 }
 
-unsigned int Vertice::obtenerZ() {
+ int Vertice::obtenerZ() {
     return z;
 }
 
-unsigned int Vertice::obtenerIndiceVer() {
+ int Vertice::obtenerIndiceVer() {
     return indiceVer;
 }
 
 // Setters
-void Vertice::fijarX(unsigned int x) {
+void Vertice::fijarX( int x) {
     this->x = x;
 }
 
-void Vertice::fijarY(unsigned int y) {
+void Vertice::fijarY( int y) {
     this->y = y;
 }
 
-void Vertice::fijarZ(unsigned int z) {
+void Vertice::fijarZ( int z) {
     this->z = z;
 }
 
-void Vertice::fijarIndiceVer(unsigned int index) {
+void Vertice::fijarIndiceVer( int index) {
     this->indiceVer = index;
 }
 
@@ -54,7 +54,7 @@ void Vertice::imprimirVertice() {
 }
 
 // Función para calcular las esquinas de la caja envolvente
-std::vector<Vertice> Vertice::calcularEsquinasCaja(unsigned int xmin, unsigned int xmax, unsigned int ymin, unsigned int ymax, unsigned int zmin, unsigned int zmax) {
+std::vector<Vertice> Vertice::calcularEsquinasCaja( int xmin,  int xmax,  int ymin,  int ymax, int zmin, int zmax) {
     std::vector<Vertice> esquinas(8);  // Crear un vector para las 8 esquinas
 
     // Definir cada vértice de la caja envolvente

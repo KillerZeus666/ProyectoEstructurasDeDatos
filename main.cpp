@@ -9,10 +9,13 @@
   #include <limits>
   #include <vector>
   #include <cmath>
+  #include <algorithm>
   #include "Objeto.h" // TAD objeto
   #include "Kdtree.hxx" //TAD KDTREE
   #include "ResultadoVertice.cpp" //TAD RESULTADO VERTICE (Vertice cercano y una distancia asociada)
   #include "GrafoML.h"
+  #include <unordered_set>
+  #include <set>
 
   ///////////////////////////////////////////////COMPONENTE 1//////////////////////////////////////////
   /*Funciones encargadas de subir un objeto a memoria,
@@ -54,7 +57,8 @@
 
   ///////////////////////////////////////////////COMPONENTE 3//////////////////////////////////////////
   void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto);
-  double calcularDistancia(Vertice& v1, Vertice& v2);
+  float calcularDistancia(Vertice& v1, Vertice& v2);
+  void ordenarVerticesPorIndice(std::vector<Vertice>& vertices);
   void ruta_corta_centro(Vertice i1, std::string nombreObjeto);
 
   ///////////////////////////////////////////////COMPONENTE 4//////////////////////////////////////////
@@ -1255,7 +1259,7 @@ void v_cercanos_caja(std::string nombreObjeto) {
 
         if (!objetoEncontrado) {
             /*Si el objeto no fue encontrado, pailas*/
-            std::cerr<<"El objeto "<<nombreObjeto<< " no ha sido cargado en memoria."<<std::endl;
+            std::cerr<<"El objeto "<<nombreObjeto<<" no ha sido cargado en memoria."<<std::endl;
             return;
         }
 
@@ -1263,69 +1267,145 @@ void v_cercanos_caja(std::string nombreObjeto) {
 
         int cantidadVertices = itObj->obtenerCantidadVerticesObj();
 
-        vertices.resize(cantidadVertices);
+        vertices.reserve(cantidadVertices);
+        std::unordered_set<int> indicesUsados; 
 
         std::list<Cara> listaCarasObjetos = itObj->obtenerCaras();
         std::list<Cara>::iterator itCara = listaCarasObjetos.begin();
 
-        /*Iterar sobre cada cara*/
         for (; itCara != listaCarasObjetos.end(); itCara++) {
-
-            /*Se obtienen las aristas*/
             std::list<Arista> listaAristasCaras = itCara->obtenerListaAristas();
             std::list<Arista>::iterator itAris = listaAristasCaras.begin();
 
-            //Iterar sobre cada arista
-            for (; itAris!=listaAristasCaras.end(); itAris++){
-
-                /*Se obtienen los vértices de las aristas*/
+            for (; itAris != listaAristasCaras.end(); itAris++) {
                 std::list<Vertice> listaVerticesAristas = itAris->obtenerListaVertices();
                 std::list<Vertice>::iterator itVer = listaVerticesAristas.begin();
 
-                /*Se itera cada vértice*/
                 for (; itVer != listaVerticesAristas.end(); itVer++) {
-                    vertices.push_back(*itVer);
+                    /*Con el índice del vértice se define si ya se insertó
+                    //o no el vértice*/
+                    int indice = itVer->obtenerIndiceVer();  
+
+                    if (indicesUsados.find(indice) == indicesUsados.end()) {
+                        /*Se agrega el índice y se pone como usado
+                        //en el mapa no ordenado auxiiar*/
+                        vertices.push_back(*itVer); 
+                        indicesUsados.insert(indice);  
+                        std::cout<<"Vértice agregado: ";
+                        vertices.back().imprimirVertice();
+                    } else {
+                        std::cout<<"Vértice duplicado con índice "<<indice<<", no agregado.\n";
+                    }
                 }
             }
         }
 
-        GrafoML<Vertice, double> grafo;
+        /*Se añaden los vértices ya al grafo final*/
+        ordenarVerticesPorIndice(vertices);
+
+        /*Antes de proceder, se hace la revisión de que ambos vértices se encuentran
+        //dentro del objeto ya con el vector de vértices */
+        bool vertice1Encontrado = false;
+        bool vertice2Encontrado = false;
+
+        for (std::vector<Vertice>::iterator itVert = vertices.begin(); itVert != vertices.end(); ++itVert) {
+            Vertice vertice = *itVert; 
+
+            /*Se va haciendo la comparacón en cada iteración*/
+            if (vertice.obtenerX() == i1.obtenerX() &&
+                vertice.obtenerY() == i1.obtenerY() &&
+                vertice.obtenerZ() == i1.obtenerZ()) {
+                vertice1Encontrado = true;
+            }
+            if (vertice.obtenerX() == i2.obtenerX() &&
+                vertice.obtenerY() == i2.obtenerY() &&
+                vertice.obtenerZ() == i2.obtenerZ()) {
+                vertice2Encontrado = true;
+            }
+            /*Si ambos vértices ya han sido encontrados, se puede salir del bucle*/
+            if (vertice1Encontrado && vertice2Encontrado) {
+                break;
+            }
+        }
+
+        /*Verificación final*/
+        if (!vertice2Encontrado && !vertice1Encontrado) {
+            std::cerr<<"\nNinguno de los vértices están en el objeto."<<std::endl;
+            return;
+        }
+
+        if (!vertice1Encontrado) {
+            std::cerr<<"\nEl Vértice 1 no se encuentra en el objeto."<<std::endl;
+            return;
+        }
+        if (!vertice2Encontrado) {
+            std::cerr<<"\nEl Vértice 2 no se encuentra en el objeto."<<std::endl;
+            return;
+        }
+
+        /*Ya con la verificación se crea el grafo y se setean los vértices*/
+        GrafoML<Vertice, float> grafo;
         grafo.setVertices(vertices);
 
-        std::cout<<"Se deberían imprimir los vértices a continuación: "<<std::endl;
+        /*Se hace una impresión de confirmación*/
+        std::cout<<"\nSe deberían imprimir los vértices a continuación: "<<std::endl;
 
-        for (size_t i = 0; i < vertices.size(); ++i) {
-            std::cout << "Vertice " << i << ": ";
-            vertices[i].imprimirVertice();  // Asumiendo que Vertice tiene un método imprimirVertice()
+        for (size_t i = 0; i<vertices.size(); ++i) {
+            std::cout<<"Vertice "<<i<<": ";
+            vertices[i].imprimirVertice();  
             std::cout << std::endl;
         }
 
-        std::list<Cara> listaCarasObjetos2 = itObj->obtenerCaras();
-        std::list<Cara>::iterator itCara2 = listaCarasObjetos2.begin();
+        /*Se usa una estructura para guardar el par de índices
+        //de los vértices que conforman la arista*/
+        using ParVertices = std::pair<int, int>;
+        std::set<ParVertices> aristasUnicas;
 
-        /*Iterar sobre cada cara*/
-        for (; itCara2 != listaCarasObjetos2.end(); itCara2++) {
+        /*Se itrea por cada cara y cada arista*/
+        for(auto& cara : itObj->obtenerCaras()) {
+            for (auto& arista : cara.obtenerListaAristas()) {
 
-            /*Se obtienen las aristas*/
-            std::list<Arista> listaAristasCaras2 = itCara->obtenerListaAristas();
-            std::list<Arista>::iterator itAris2 = listaAristasCaras2.begin();
+                /*Se obtiene la lista de vértices  de la arista y 
+                //se verifica que se componga de efectivamente 2 vértices*/
 
-            /*Iterar sobre cada arista*/
-            for (; itAris2!=listaAristasCaras2.end(); itAris2++){
+                std::list<Vertice> listaVerticesArista = arista.obtenerListaVertices();
+                if (listaVerticesArista.size()<2) continue;  
 
-                /*Se obtienen los vértices de las aristas*/
-                std::list<Vertice> listaVerticesAristas2 = itAris2->obtenerListaVertices();
-                std::list<Vertice>::iterator itVer2 = listaVerticesAristas2.begin();
+                /*Se obtienen los dos vértices de la arista*/
+                auto it = listaVerticesArista.begin();
+                Vertice v1 = *it;
+                ++it;
+                Vertice v2 = *it;
 
-                /*Se itera cada vértice*/
-                for (; itVer2 != listaVerticesAristas2.end(); itVer2++) {
-                    Vertice v1 = *itVer2;
-                    auto nextIt = std::next(itVer2);
-                    if (nextIt == listaVerticesAristas2.end()) break;
+                /*Y se obtienen los índices, creando un par ordenado
+                //para la representación de la arista*/ 
+                int indice1 = v1.obtenerIndiceVer();
+                int indice2 = v2.obtenerIndiceVer();
+                ParVertices aristaNormalizada = std::make_pair(std::min(indice1, indice2), std::max(indice1, indice2));
 
-                    Vertice v2 = *nextIt;
-                    double costo = calcularDistancia(v1, v2);
-                    grafo.insertarAristaNoDirigida(v1, v2, costo);
+                /*Impresión de verificación*/
+                std::cout<<"Vértice 1: Indice "<<indice1 <<", Coordenadas ("<<v1.obtenerX()<<", "<<v1.obtenerY()<<", "<<v1.obtenerZ()<<")\n";
+                std::cout<<"Vértice 2: Indice "<<indice2 <<", Coordenadas ("<<v2.obtenerX()<<", "<<v2.obtenerY()<<", "<<v2.obtenerZ()<<")\n";
+
+                /*Otra impresión de verificación*/
+                float costo = calcularDistancia(v1, v2);
+                std::cout<<"Distancia calculada (peso) entre vértices"<<indice1<<" y "<<indice2<<": "<<costo<<"\n";
+
+                /*Se revisa que no existan duplicados recoriendo el conjunto
+                //de aristas*/
+                if (aristasUnicas.find(aristaNormalizada) == aristasUnicas.end()) {
+                    
+                    /*Se ingresa la arista no dirigida con su respectivo costo*/
+                    if (grafo.insertarAristaNoDirigida(v1, v2, costo)) { 
+                        std::cout<<"Arista no dirigida agregada entre vértices "<<indice1<<" y "<<indice2<<std::endl;
+
+                        /*Se marca que ya se insertó la arista para no repetir más*/
+                        aristasUnicas.insert(aristaNormalizada); 
+                    }else{
+                        std::cerr<<"Error al insertar arista entre vértices "<<indice1<<" y "<<indice2<<std::endl;
+                    }
+                } else {
+                    std::cout<<"Arista duplicada entre vértices "<<indice1<<" y "<<indice2<<", no agregada.\n";
                 }
             }
         }
@@ -1333,17 +1413,9 @@ void v_cercanos_caja(std::string nombreObjeto) {
         grafo.imprimir();
     }
 
-    double calcularDistancia(Vertice& v1, Vertice& v2) {
-        double dx = (v1.obtenerX()) - v2.obtenerX();
-        double dy = (v1.obtenerY()) - v2.obtenerY();
-        double dz = (v1.obtenerZ()) - v2.obtenerZ();
-        return std::sqrt(dx * dx + dy * dy + dz * dz);
-    }
-
     void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
     /*En proceso por...*/
     }
-
 
     //////////////////////////////////FUNCIONES AUXILIARES///////////////////////////////
     /*Función de búsqueda auxiliar para encontrar un objeto tipo Objeto (malla) por medio de un ciclo for, si no encuentra nada,
@@ -1452,4 +1524,17 @@ void v_cercanos_caja(std::string nombreObjeto) {
 
         std::cout<<"Los datos del objeto son validos"<<std::endl;
         return true;
+    }
+
+    float calcularDistancia(Vertice& v1, Vertice& v2) {
+        float dx = (v1.obtenerX()) - v2.obtenerX();
+        float dy = (v1.obtenerY()) - v2.obtenerY();
+        float dz = (v1.obtenerZ()) - v2.obtenerZ();
+        return std::sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    void ordenarVerticesPorIndice(std::vector<Vertice>& vertices) {
+        std::sort(vertices.begin(), vertices.end(), [](Vertice& a, Vertice& b) {
+            return a.obtenerIndiceVer() < b.obtenerIndiceVer();
+        });
     }
