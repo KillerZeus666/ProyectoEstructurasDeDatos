@@ -756,15 +756,19 @@
 
 
     template <class T, class U>
-    void GrafoML<T, U>::mostrarCaminoProyecto(const std::vector<int>& predecesores, int j) {
+    void GrafoML<T, U>::mostrarCaminoProyecto(const std::vector<int>& predecesores, int j){
+
+        /*Simplemente se imprimen los predecesores con ayuda de recursión que va 
+        //generando el camino*/
         if (predecesores[j] == -1) {
             std::cout << vertices[j];
             return;
         }
         mostrarCamino(predecesores, predecesores[j]);
-        std::cout << ", " << vertices[j];
+        std::cout<<", "<<vertices[j];
     }
 
+    /*Se utiliza la misma lógica que en algoritmo de Dijkstra base*/
     template <class T, class U>
     void GrafoML<T, U>::algoritmoDijkstraProyecto(T origen, T destino) {
         int n = vertices.size();
@@ -772,7 +776,7 @@
         std::vector<bool> visitado(n, false);
         std::vector<int> predecesores(n, -1); 
 
-        /*Control de errores*/
+        /*Control de errores pero ahora para ambos vértcices*/
         int inicioIdx = buscarVertice(origen);
         int destinoIdx = buscarVertice(destino);
 
@@ -781,19 +785,28 @@
             return;
         }
 
-        // Marcar la distancia del origen como 0
+        /*Se marca la distancia de origen como 0*/
         dist[inicioIdx] = 0;
 
+        /*Se lleva el contador de todos los vértices visitados - 1 el de origen*/
         for (int count=0; count<n-1; count++) {
+
+            /*Se obtiene la distancia mínima y se marca como visitado el vértice
+            //correspondiente*/
             int u = minDistancia(dist, visitado);
             if (u == -1) break; 
 
             visitado[u] = true;
 
+            /*Se revisa arista por arista para obtener el índice y el peso
+            //revisando que no sea la distancia infinita, que ya esté visitado
+            //y que sea menor a la distancia actual*/
             for (const auto& arista : aristas[u]) {
                 int v = arista.first;
                 U peso = arista.second;
 
+                /*Se realiza la sumatoria de distancias para añadir a los precesores
+                //en caso de que sea menor*/
                 if (!visitado[v] && dist[u] != 99999999 && dist[u] + peso < dist[v]) {
                     dist[v] = dist[u] + peso;
                     predecesores[v] = u;
