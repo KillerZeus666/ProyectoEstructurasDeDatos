@@ -1263,13 +1263,20 @@ void v_cercanos_caja(std::string nombreObjeto) {
             return;
         }
 
+        /*Se crea un vector de vértices auxiliar mientras se 
+        //agregan todos los vértices del objeto*/
         std::vector<Vertice> vertices;
 
+        /*Se obtiene la cantidad de vértices y se reserva esa memoria
+        //en el vector anteriormente propuesto*/
         int cantidadVertices = itObj->obtenerCantidadVerticesObj();
-
         vertices.reserve(cantidadVertices);
+
+        /*Adicionalmente se crea un conjunto no ordenado (para no permitir repetidos
+        //de los vectores que ya fueron usados por medio de sus índices)*/
         std::unordered_set<int> indicesUsados; 
 
+        /*Se procede a iterar todo el objeto para sacar los vértices*/
         std::list<Cara> listaCarasObjetos = itObj->obtenerCaras();
         std::list<Cara>::iterator itCara = listaCarasObjetos.begin();
 
@@ -1291,6 +1298,8 @@ void v_cercanos_caja(std::string nombreObjeto) {
                         //en el mapa no ordenado auxiiar*/
                         vertices.push_back(*itVer); 
                         indicesUsados.insert(indice);  
+
+                        /*Impresiones de confirmación para revisar de que si se están insertando*/
                         //std::cout<<"Vértice agregado: ";
                         //vertices.back().imprimirVertice();
                     } else {
@@ -1300,8 +1309,10 @@ void v_cercanos_caja(std::string nombreObjeto) {
             }
         }
 
-        /*Se añaden los vértices ya al grafo final*/
+        /*Se añaden los vértices ya al grafo final
+        //se ordenan por índice con ayuda de una función auxiliar*/
         ordenarVerticesPorIndice(vertices);
+
         std::cout<<std::endl;
         std::cout<<"---- Vertices del grafo ----"<<std::endl;
         for(int i=0; i< vertices.size(); i++){
@@ -1309,10 +1320,11 @@ void v_cercanos_caja(std::string nombreObjeto) {
         }
 
         /*Antes de proceder, se hace la revisión de que ambos vértices se encuentran
-        //dentro del objeto ya con el vector de vértices */
+        //dentro del objeto ya con el vector de vértices ordenado*/
         bool vertice1Encontrado = false;
         bool vertice2Encontrado = false;
 
+        /*Se recorre el vector y se hace la comparación respectiva*/
         for (std::vector<Vertice>::iterator itVert = vertices.begin(); itVert != vertices.end(); ++itVert) {
             Vertice vertice = *itVert; 
 
@@ -1338,7 +1350,6 @@ void v_cercanos_caja(std::string nombreObjeto) {
             std::cerr<<"\nNinguno de los vértices están en el objeto."<<std::endl;
             return;
         }
-
         if (!vertice1Encontrado) {
             std::cerr<<"\nEl Vértice 1 no se encuentra en el objeto."<<std::endl;
             return;
@@ -1348,7 +1359,7 @@ void v_cercanos_caja(std::string nombreObjeto) {
             return;
         }
 
-        /*Ya con la verificación se crea el grafo y se setean los vértices*/
+        /*Ya con la verificación de que existen ambos vértices se crea el grafo y se setean los vértices*/
         GrafoML<Vertice, float> grafo;
         grafo.setVertices(vertices);
 
@@ -1361,8 +1372,8 @@ void v_cercanos_caja(std::string nombreObjeto) {
             std::cout << std::endl;
         }*/
 
-        /*Se usa una estructura para guardar el par de índices
-        //de los vértices que conforman la arista*/
+        /*Acá ya se inicia la lógica para la extracción de aristas*/
+        /*Se usa una estructura temporal para guardar el par de índices de los vértices que conforman la arista*/
         using ParVertices = std::pair<int, int>;
         std::set<ParVertices> aristasUnicas;
 
@@ -1370,7 +1381,7 @@ void v_cercanos_caja(std::string nombreObjeto) {
         for(auto& cara : itObj->obtenerCaras()) {
             for (auto& arista : cara.obtenerListaAristas()) {
 
-                /*Se obtiene la lista de vértices  de la arista y 
+                /*Se obtiene la lista de vértices de la arista y 
                 //se verifica que se componga de efectivamente 2 vértices*/
 
                 std::list<Vertice> listaVerticesArista = arista.obtenerListaVertices();
@@ -1383,7 +1394,8 @@ void v_cercanos_caja(std::string nombreObjeto) {
                 Vertice v2 = *it;
 
                 /*Y se obtienen los índices, creando un par ordenado
-                //para la representación de la arista*/ 
+                //para la representación de la arista con ayuda de la estructura
+                //anteriormente creada*/ 
                 int indice1 = v1.obtenerIndiceVer();
                 int indice2 = v2.obtenerIndiceVer();
                 ParVertices aristaNormalizada = std::make_pair(std::min(indice1, indice2), std::max(indice1, indice2));
@@ -1392,16 +1404,22 @@ void v_cercanos_caja(std::string nombreObjeto) {
                 std::cout<<"Vértice 1: Indice "<<indice1 <<", Coordenadas ("<<v1.obtenerX()<<", "<<v1.obtenerY()<<", "<<v1.obtenerZ()<<")\n";
                 std::cout<<"Vértice 2: Indice "<<indice2 <<", Coordenadas ("<<v2.obtenerX()<<", "<<v2.obtenerY()<<", "<<v2.obtenerZ()<<")\n";*/
 
-                /*Otra impresión de verificación*/
+
+                /*Se calcula la distancia euclidiana de ambos vértices que
+                //componen la arista, lo que corresponde al costo entre ambos
+                //vértices*/
                 float costo = calcularDistancia(v1, v2);
+
+                /*Otra impresión de verificación*/
                 //std::cout<<"Distancia calculada (peso) entre vértices"<<indice1<<" y "<<indice2<<": "<<costo<<"\n";
 
                 /*Se revisa que no existan duplicados recoriendo el conjunto
-                //de aristas*/
+                //de aristas con .find*/
                 if (aristasUnicas.find(aristaNormalizada) == aristasUnicas.end()) {
                     
                     /*Se ingresa la arista no dirigida con su respectivo costo*/
                     if (grafo.insertarAristaNoDirigida(v1, v2, costo)) { 
+
                         //std::cout<<"Arista no dirigida agregada entre vértices "<<indice1<<" y "<<indice2<<std::endl;
 
                         /*Se marca que ya se insertó la arista para no repetir más*/
@@ -1419,6 +1437,9 @@ void v_cercanos_caja(std::string nombreObjeto) {
 
         std::cout<<std::endl;
 
+        /*Por cuestiones de sobrecarga de operador, se busca cual índice
+        //le pertenece a los vértices que se ingresaron con parámetros
+        //para hacer exitosa la búsqueda dentro de las otras funciones*/
         int indicei1;
 
         for (size_t i = 0; i < vertices.size(); ++i) {
@@ -1438,6 +1459,7 @@ void v_cercanos_caja(std::string nombreObjeto) {
         i1.fijarIndiceVer(indicei1);
         i2.fijarIndiceVer(indicei2);
 
+        /*Ya con esto se hace la ruta corta e impresión solicitada en el enunciado*/
         grafo.algoritmoDijkstraProyecto(i1, i2);
     }
 
@@ -1554,6 +1576,7 @@ void v_cercanos_caja(std::string nombreObjeto) {
         return true;
     }
 
+    /*Función auxilir que calcula la distancia euclidiana entre 2 vértices*/
     float calcularDistancia(Vertice& v1, Vertice& v2) {
         float dx = (v1.obtenerX()) - v2.obtenerX();
         float dy = (v1.obtenerY()) - v2.obtenerY();
@@ -1561,6 +1584,8 @@ void v_cercanos_caja(std::string nombreObjeto) {
         return std::sqrt(dx * dx + dy * dy + dz * dz);
     }
 
+    /*Función auxiliar que ordena en orden ascendente según el índice de los vértices
+    //que se encuentran dentro de un vector con ayuda de sort*/
     void ordenarVerticesPorIndice(std::vector<Vertice>& vertices) {
         std::sort(vertices.begin(), vertices.end(), [](Vertice& a, Vertice& b) {
             return a.obtenerIndiceVer() < b.obtenerIndiceVer();
