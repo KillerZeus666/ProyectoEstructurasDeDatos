@@ -66,6 +66,10 @@
         void mostrarDistancias(const std::vector<int>& dist, const std::vector<int>& predecesores, int inicioIdx); //CHECK
         void algoritmoDijkstra(T origen); //CHECK
         void mostrarCamino(const std::vector<int>& predecesores, int j); //CHECK
+
+        //FUNCIONES EDITADAS PARA EL PROYECTO
+        void mostrarCaminoProyecto(const std::vector<int>& predecesores, int j);
+        void algoritmoDijkstraProyecto(T origen, T destino);
         
     };
 
@@ -748,4 +752,76 @@
         /*Se muestran las distancias :D*/
         mostrarDistancias(dist, predecesores, inicioIdx);
     }
+
+
+
+    template <class T, class U>
+    void GrafoML<T, U>::mostrarCaminoProyecto(const std::vector<int>& predecesores, int j) {
+        if (predecesores[j] == -1) {
+            std::cout << vertices[j];
+            return;
+        }
+        mostrarCamino(predecesores, predecesores[j]);
+        std::cout << ", " << vertices[j];
+    }
+
+    template <class T, class U>
+    void GrafoML<T, U>::algoritmoDijkstraProyecto(T origen, T destino) {
+        int n = vertices.size();
+        std::vector<int> dist(n, 99999999);
+        std::vector<bool> visitado(n, false);
+        std::vector<int> predecesores(n, -1); 
+
+        /*Control de errores*/
+        int inicioIdx = buscarVertice(origen);
+        int destinoIdx = buscarVertice(destino);
+
+        if (inicioIdx == -1 || destinoIdx == -1) {
+            std::cout<<"Uno o ambos vértices no existen en el grafo.\n";
+            return;
+        }
+
+        // Marcar la distancia del origen como 0
+        dist[inicioIdx] = 0;
+
+        for (int count=0; count<n-1; count++) {
+            int u = minDistancia(dist, visitado);
+            if (u == -1) break; 
+
+            visitado[u] = true;
+
+            for (const auto& arista : aristas[u]) {
+                int v = arista.first;
+                U peso = arista.second;
+
+                if (!visitado[v] && dist[u] != 99999999 && dist[u] + peso < dist[v]) {
+                    dist[v] = dist[u] + peso;
+                    predecesores[v] = u;
+                }
+            }
+        }
+
+        // Mostrar solo el camino desde origen a destino en el formato especificado
+        if (dist[destinoIdx] == 99999999) {
+            std::cout<<"No hay camino entre "<<origen<<" y "<<destino<<".\n";
+        } else {
+            std::cout<<"La ruta más corta que conecta los vértices:\n";
+            std::cout<<"Origen: Indice: "<<inicioIdx<<", Coordenadas: (" 
+                  <<vertices[inicioIdx].obtenerX()<<", " 
+                  <<vertices[inicioIdx].obtenerY()<<", " 
+                  <<vertices[inicioIdx].obtenerZ()<<")\n";
+            std::cout<<"Destino: Indice: "<<destinoIdx<<", Coordenadas: (" 
+                  <<vertices[destinoIdx].obtenerX()<<", " 
+                  <<vertices[destinoIdx].obtenerY()<<", " 
+                  <<vertices[destinoIdx].obtenerZ()<<")\n";
+        
+            std::cout<<"Del objeto pasa por: ";
+            mostrarCamino(predecesores, destinoIdx);  // Mostrar el camino
+        
+            std::cout<<"\nCon una longitud de: "<<dist[destinoIdx]<<".\n";
+        }
+    }
+
+
     #endif
+    

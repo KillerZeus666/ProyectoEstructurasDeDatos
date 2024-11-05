@@ -71,8 +71,10 @@ std::vector<Vertice> Vertice::calcularEsquinasCaja( int xmin,  int xmax,  int ym
 }
 
 bool operator==(const Vertice& v1, const Vertice& v2) {
-    return v1.indiceVer == v2.indiceVer;
+    return  (v1.x == v2.x) &&(v1.y == v2.y) && (v1.z == v2.z);
 }
+
+
 
 std::ostream& operator<<(std::ostream& os, const Vertice& vertice) {
     os << "Indice: " << vertice.indiceVer << ", Coordenadas: (" 

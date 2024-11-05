@@ -1237,13 +1237,13 @@ void v_cercanos_caja(std::string nombreObjeto) {
 
     void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
 
-        /*Impresión de confirmación*/
+        /*Impresión de confirmación
         std::cout<<"Vertice 1";
         i1.imprimirVertice();
         std::cout<<"Vertice 2";
         i2.imprimirVertice();
         std::cout<<"Nombre de Objeto desde la función: "<<nombreObjeto<<std::endl;
-        std::cout<<std::endl;
+        std::cout<<std::endl;*/
 
         /*Verificar si el objeto existe en memoria*/
         std::list<Objeto>::iterator itObj;
@@ -1291,10 +1291,10 @@ void v_cercanos_caja(std::string nombreObjeto) {
                         //en el mapa no ordenado auxiiar*/
                         vertices.push_back(*itVer); 
                         indicesUsados.insert(indice);  
-                        std::cout<<"Vértice agregado: ";
-                        vertices.back().imprimirVertice();
+                        //std::cout<<"Vértice agregado: ";
+                        //vertices.back().imprimirVertice();
                     } else {
-                        std::cout<<"Vértice duplicado con índice "<<indice<<", no agregado.\n";
+                        //std::cout<<"Vértice duplicado con índice "<<indice<<", no agregado.\n";
                     }
                 }
             }
@@ -1302,6 +1302,11 @@ void v_cercanos_caja(std::string nombreObjeto) {
 
         /*Se añaden los vértices ya al grafo final*/
         ordenarVerticesPorIndice(vertices);
+        std::cout<<std::endl;
+        std::cout<<"---- Vertices del grafo ----"<<std::endl;
+        for(int i=0; i< vertices.size(); i++){
+            vertices[i].imprimirVertice();
+        }
 
         /*Antes de proceder, se hace la revisión de que ambos vértices se encuentran
         //dentro del objeto ya con el vector de vértices */
@@ -1347,14 +1352,14 @@ void v_cercanos_caja(std::string nombreObjeto) {
         GrafoML<Vertice, float> grafo;
         grafo.setVertices(vertices);
 
-        /*Se hace una impresión de confirmación*/
+        /*Se hace una impresión de confirmación
         std::cout<<"\nSe deberían imprimir los vértices a continuación: "<<std::endl;
 
         for (size_t i = 0; i<vertices.size(); ++i) {
             std::cout<<"Vertice "<<i<<": ";
             vertices[i].imprimirVertice();  
             std::cout << std::endl;
-        }
+        }*/
 
         /*Se usa una estructura para guardar el par de índices
         //de los vértices que conforman la arista*/
@@ -1383,13 +1388,13 @@ void v_cercanos_caja(std::string nombreObjeto) {
                 int indice2 = v2.obtenerIndiceVer();
                 ParVertices aristaNormalizada = std::make_pair(std::min(indice1, indice2), std::max(indice1, indice2));
 
-                /*Impresión de verificación*/
+                /*Impresión de verificación
                 std::cout<<"Vértice 1: Indice "<<indice1 <<", Coordenadas ("<<v1.obtenerX()<<", "<<v1.obtenerY()<<", "<<v1.obtenerZ()<<")\n";
-                std::cout<<"Vértice 2: Indice "<<indice2 <<", Coordenadas ("<<v2.obtenerX()<<", "<<v2.obtenerY()<<", "<<v2.obtenerZ()<<")\n";
+                std::cout<<"Vértice 2: Indice "<<indice2 <<", Coordenadas ("<<v2.obtenerX()<<", "<<v2.obtenerY()<<", "<<v2.obtenerZ()<<")\n";*/
 
                 /*Otra impresión de verificación*/
                 float costo = calcularDistancia(v1, v2);
-                std::cout<<"Distancia calculada (peso) entre vértices"<<indice1<<" y "<<indice2<<": "<<costo<<"\n";
+                //std::cout<<"Distancia calculada (peso) entre vértices"<<indice1<<" y "<<indice2<<": "<<costo<<"\n";
 
                 /*Se revisa que no existan duplicados recoriendo el conjunto
                 //de aristas*/
@@ -1397,7 +1402,7 @@ void v_cercanos_caja(std::string nombreObjeto) {
                     
                     /*Se ingresa la arista no dirigida con su respectivo costo*/
                     if (grafo.insertarAristaNoDirigida(v1, v2, costo)) { 
-                        std::cout<<"Arista no dirigida agregada entre vértices "<<indice1<<" y "<<indice2<<std::endl;
+                        //std::cout<<"Arista no dirigida agregada entre vértices "<<indice1<<" y "<<indice2<<std::endl;
 
                         /*Se marca que ya se insertó la arista para no repetir más*/
                         aristasUnicas.insert(aristaNormalizada); 
@@ -1405,12 +1410,35 @@ void v_cercanos_caja(std::string nombreObjeto) {
                         std::cerr<<"Error al insertar arista entre vértices "<<indice1<<" y "<<indice2<<std::endl;
                     }
                 } else {
-                    std::cout<<"Arista duplicada entre vértices "<<indice1<<" y "<<indice2<<", no agregada.\n";
+                    //std::cout<<"Arista duplicada entre vértices "<<indice1<<" y "<<indice2<<", no agregada.\n";
                 }
             }
         }
 
         grafo.imprimir();
+
+        std::cout<<std::endl;
+
+        int indicei1;
+
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            if (vertices[i] == i1) { 
+                indicei1 = i;
+            }
+        }
+
+        int indicei2 = grafo.buscarVertice(i2);
+
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            if (vertices[i] == i2) { 
+                indicei2 = i;
+            }
+        }
+
+        i1.fijarIndiceVer(indicei1);
+        i2.fijarIndiceVer(indicei2);
+
+        grafo.algoritmoDijkstraProyecto(i1, i2);
     }
 
     void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
