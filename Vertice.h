@@ -8,25 +8,25 @@
 class Vertice {
 private:
     int indiceVer;
-    int x;
-    int y;
-    int z;
+    float x;
+    float y;
+    float z;
 
 public:
     // Constructor
     Vertice();
-    Vertice(int x, int y, int z);
+    Vertice(float x, float y, float z);
 
     // Getters
-     int obtenerX();
-     int obtenerY();
-     int obtenerZ();
+     float obtenerX();
+     float obtenerY();
+     float obtenerZ();
      int obtenerIndiceVer();
     
     // Setters
-    void fijarX( int x);
-    void fijarY( int y);
-    void fijarZ( int z);
+    void fijarX( float x);
+    void fijarY( float y);
+    void fijarZ( float z);
     void fijarIndiceVer( int index);
 
     // Método para imprimir el vértice

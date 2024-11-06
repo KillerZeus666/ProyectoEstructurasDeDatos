@@ -62,7 +62,7 @@
         void encontrarCaminoHamilton(T inicio); //CHECK
         bool caminoHamilton(int pos, std::vector<bool>& visitado, std::vector<T>& camino); //CHECK
 
-        int minDistancia(const std::vector<int>& dist, const std::vector<bool>& visitado); //CHECK
+        float minDistancia(const std::vector<float>& dist, const std::vector<bool>& visitado); //CHECK
         void mostrarDistancias(const std::vector<int>& dist, const std::vector<int>& predecesores, int inicioIdx); //CHECK
         void algoritmoDijkstra(T origen); //CHECK
         void mostrarCamino(const std::vector<int>& predecesores, int j); //CHECK
@@ -649,8 +649,8 @@
 
     //Distancia mínima (Auxiliar de algoritmo de Dijkstra)
     template <class T, class U>
-    int GrafoML<T, U>::minDistancia(const std::vector<int>& dist, const std::vector<bool>& visitado) {
-        int min = 99999999, min_index=-1;
+    float GrafoML<T, U>::minDistancia(const std::vector<float>& dist, const std::vector<bool>& visitado) {
+        float min = 99999999, min_index=-1;
 
         /*Se establece la distancia por default de 99999999, y se itera en cada vértice
         //para obtener el vértice con la distancia mínima, haciendo un reemplazo
@@ -772,7 +772,7 @@
     template <class T, class U>
     void GrafoML<T, U>::algoritmoDijkstraProyecto(T origen, T destino) {
         int n = vertices.size();
-        std::vector<int> dist(n, 99999999);
+        std::vector<float> dist(n, 99999999);
         std::vector<bool> visitado(n, false);
         std::vector<int> predecesores(n, -1); 
 
@@ -793,7 +793,7 @@
 
             /*Se obtiene la distancia mínima y se marca como visitado el vértice
             //correspondiente*/
-            int u = minDistancia(dist, visitado);
+            float u = minDistancia(dist, visitado);
             if (u == -1) break; 
 
             visitado[u] = true;

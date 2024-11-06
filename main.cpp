@@ -56,10 +56,10 @@
 
 
   ///////////////////////////////////////////////COMPONENTE 3//////////////////////////////////////////
-  void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto);
+  void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto, std::list<Objeto>& listadoObjetos);
   float calcularDistancia(Vertice& v1, Vertice& v2);
   void ordenarVerticesPorIndice(std::vector<Vertice>& vertices);
-  void ruta_corta_centro(Vertice i1, std::string nombreObjeto);
+  void ruta_corta_centro(Vertice i1, std::string nombreObjeto, std::list<Objeto>& listadoObjetos);
 
   ///////////////////////////////////////////////COMPONENTE 4//////////////////////////////////////////
   void ayuda(std::string comando);
@@ -174,18 +174,29 @@ std::list<Objeto> objetosPrograma;
                         Vertice i2(x2, y2, z2); 
 
                         /*Se llama a la función*/
-                        ruta_corta(i1, i2, nombreObjeto);
+                        ruta_corta(i1, i2, nombreObjeto, objetosPrograma);
                     } else {
-                        std::cout << "Error: Cada vértice debe tener exactamente tres dígitos." << std::endl;
+                        std::cout<<"Error: Cada vértice debe tener exactamente tres dígitos." << std::endl;
                     }
                 } else {
-                    std::cout << "Error: Uso incorrecto. Use 'ayuda ruta_corta' para más informacion." << std::endl;
+                    std::cout<<"Error: Uso incorrecto. Use 'ayuda ruta_corta' para más informacion." << std::endl;
                 }
             } else if (comandoUsuario == "ruta_corta_centro") {
                 if (argumentosUsuario.size() == 2) {
-                    Vertice i1;
+                    std::string vertice1Str = argumentosUsuario[0]; 
                     std::string nombreObjeto = argumentosUsuario[1];
-                    ruta_corta_centro(i1, nombreObjeto);
+
+                    if (vertice1Str.size() == 3) {
+                        /*Ajuste de parámetros y creación de primer vértice*/
+                        int x1 = vertice1Str[0] - '0'; 
+                        int y1 = vertice1Str[1] - '0'; 
+                        int z1 = vertice1Str[2] - '0'; 
+                        Vertice i1(x1, y1, z1);
+                        i1.fijarIndiceVer(0);
+
+                        /*Se llama la función*/
+                        ruta_corta_centro(i1, nombreObjeto, objetosPrograma);
+                    }
                 } else {
                     std::cout << "Error: Uso incorrecto. Use 'ayuda ruta_corta_centro' para más informacion." << std::endl;
                 }
@@ -1235,7 +1246,7 @@ void v_cercanos_caja(std::string nombreObjeto) {
     }
 }
 
-    void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto) {
+    void ruta_corta(Vertice i1, Vertice i2, std::string nombreObjeto, std::list<Objeto>& listadoObjetos) {
 
         /*Impresión de confirmación
         std::cout<<"Vertice 1";
@@ -1244,6 +1255,11 @@ void v_cercanos_caja(std::string nombreObjeto) {
         i2.imprimirVertice();
         std::cout<<"Nombre de Objeto desde la función: "<<nombreObjeto<<std::endl;
         std::cout<<std::endl;*/
+
+        if(i1 == i2){
+            std::cout<<"Los vertices dados son iguales"<<std::endl;
+            return;
+        }
 
         /*Verificar si el objeto existe en memoria*/
         std::list<Objeto>::iterator itObj;
@@ -1463,8 +1479,230 @@ void v_cercanos_caja(std::string nombreObjeto) {
         grafo.algoritmoDijkstraProyecto(i1, i2);
     }
 
-    void ruta_corta_centro(Vertice i1, std::string nombreObjeto) {
-    /*En proceso por...*/
+    void ruta_corta_centro(Vertice i1, std::string nombreObjeto, std::list<Objeto>& listadoObjetos) {
+        /*En proceso por Natalia*/
+
+        std::cout<<"Vertice 1: ";
+        i1.imprimirVertice();
+        std::cout<<"Nombre de Objeto desde la función: "<<nombreObjeto<<std::endl;
+
+        /*Verificar si el objeto existe en memoria*/
+        std::list<Objeto>::iterator itObj;
+        bool objetoEncontrado = false;
+
+        /*Se busca el objeto*/
+        for (itObj = objetosPrograma.begin(); itObj != objetosPrograma.end(); ++itObj) {
+            if (itObj->obtenerNombreObjeto() == nombreObjeto) {
+                objetoEncontrado = true;
+                break; /*Se sale del bucle cuando se encuentre*/
+            }
+        }
+
+        if (!objetoEncontrado) {
+            /*Si el objeto no fue encontrado, pailas*/
+            std::cerr<<"El objeto "<<nombreObjeto<<" no ha sido cargado en memoria."<<std::endl;
+            return;
+        }
+
+        /*Se crea un vector de vértices auxiliar mientras se 
+        //agregan todos los vértices del objeto*/
+        std::vector<Vertice> vertices;
+
+        /*Se obtiene la cantidad de vértices y se reserva esa memoria
+        //en el vector anteriormente propuesto*/
+        int cantidadVertices = itObj->obtenerCantidadVerticesObj();
+        vertices.reserve(cantidadVertices+1);
+
+        /*Adicionalmente se crea un conjunto no ordenado (para no permitir repetidos
+        //de los vectores que ya fueron usados por medio de sus índices)*/
+        std::unordered_set<int> indicesUsados; 
+
+        /*Se procede a iterar todo el objeto para sacar los vértices*/
+        std::list<Cara> listaCarasObjetos = itObj->obtenerCaras();
+        std::list<Cara>::iterator itCara = listaCarasObjetos.begin();
+
+        for (; itCara != listaCarasObjetos.end(); itCara++) {
+            std::list<Arista> listaAristasCaras = itCara->obtenerListaAristas();
+            std::list<Arista>::iterator itAris = listaAristasCaras.begin();
+
+            for (; itAris != listaAristasCaras.end(); itAris++) {
+                std::list<Vertice> listaVerticesAristas = itAris->obtenerListaVertices();
+                std::list<Vertice>::iterator itVer = listaVerticesAristas.begin();
+
+                for (; itVer != listaVerticesAristas.end(); itVer++) {
+                    /*Con el índice del vértice se define si ya se insertó
+                    //o no el vértice*/
+                    int indice = itVer->obtenerIndiceVer();  
+
+                    if (indicesUsados.find(indice) == indicesUsados.end()) {
+                        /*Se agrega el índice y se pone como usado
+                        //en el mapa no ordenado auxiiar*/
+                        vertices.push_back(*itVer); 
+                        indicesUsados.insert(indice);  
+
+                        /*Impresiones de confirmación para revisar de que si se están insertando*/
+                        //std::cout<<"Vértice agregado: ";
+                        //vertices.back().imprimirVertice();
+                    } else {
+                        //std::cout<<"Vértice duplicado con índice "<<indice<<", no agregado.\n";
+                    }
+                }
+            }
+        }
+
+        /*Adicionalmente calcula la coordenada promedio y se inserta*/
+        float sumaX = 0, sumaY = 0, sumaZ = 0;
+        int numVertices = vertices.size();
+
+        for (int i=0; i<vertices.size(); i++) {
+            sumaX += vertices[i].obtenerX();
+            sumaY += vertices[i].obtenerY();
+            sumaZ += vertices[i].obtenerZ();
+        }
+
+        float promedioX = sumaX / numVertices;
+        float promedioY = sumaY / numVertices;
+        float promedioZ = sumaZ / numVertices;
+
+        Vertice centroide(promedioX, promedioY, promedioZ);
+        centroide.fijarIndiceVer(numVertices);
+
+        vertices.push_back(centroide);
+
+        /*Se añaden los vértices ya al grafo final
+        //se ordenan por índice con ayuda de una función auxiliar*/
+        ordenarVerticesPorIndice(vertices);
+
+        std::cout<<std::endl;
+        std::cout<<"---- Vertices del grafo ----"<<std::endl;
+        for(int i=0; i< vertices.size(); i++){
+            vertices[i].imprimirVertice();
+        }
+
+        /*Antes de proceder, se hace la revisión de que ambos vértices se encuentran
+        //dentro del objeto ya con el vector de vértices ordenado*/
+        bool vertice1Encontrado = false;
+
+
+         for (std::vector<Vertice>::iterator itVert = vertices.begin(); itVert != vertices.end(); ++itVert) {
+            Vertice vertice = *itVert; 
+
+            /*Se va haciendo la comparacón en cada iteración*/
+            if (vertice.obtenerX() == i1.obtenerX() &&
+                vertice.obtenerY() == i1.obtenerY() &&
+                vertice.obtenerZ() == i1.obtenerZ()) {
+                vertice1Encontrado = true;
+                break;}
+            
+        }
+
+        /*Verificación final*/
+        if (!vertice1Encontrado) {
+            std::cerr<<"\nEl vértice ingresado no se encuenta en el objeto."<<std::endl;
+            return;
+        }
+
+        /*Ya con la verificación de que existen ambos vértices se crea el grafo y se setean los vértices*/
+        GrafoML<Vertice, float> grafo;
+        grafo.setVertices(vertices);
+
+        using ParVertices = std::pair<int, int>;
+        std::set<ParVertices> aristasUnicas;
+
+        /*Se itrea por cada cara y cada arista*/
+        for(auto& cara : itObj->obtenerCaras()) {
+            for (auto& arista : cara.obtenerListaAristas()) {
+
+                /*Se obtiene la lista de vértices de la arista y 
+                //se verifica que se componga de efectivamente 2 vértices*/
+
+                std::list<Vertice> listaVerticesArista = arista.obtenerListaVertices();
+                if (listaVerticesArista.size()<2) continue;  
+
+                /*Se obtienen los dos vértices de la arista*/
+                auto it = listaVerticesArista.begin();
+                Vertice v1 = *it;
+                ++it;
+                Vertice v2 = *it;
+
+                /*Y se obtienen los índices, creando un par ordenado
+                //para la representación de la arista con ayuda de la estructura
+                //anteriormente creada*/ 
+                int indice1 = v1.obtenerIndiceVer();
+                int indice2 = v2.obtenerIndiceVer();
+                ParVertices aristaNormalizada = std::make_pair(std::min(indice1, indice2), std::max(indice1, indice2));
+
+                /*Impresión de verificación
+                std::cout<<"Vértice 1: Indice "<<indice1 <<", Coordenadas ("<<v1.obtenerX()<<", "<<v1.obtenerY()<<", "<<v1.obtenerZ()<<")\n";
+                std::cout<<"Vértice 2: Indice "<<indice2 <<", Coordenadas ("<<v2.obtenerX()<<", "<<v2.obtenerY()<<", "<<v2.obtenerZ()<<")\n";*/
+
+
+                /*Se calcula la distancia euclidiana de ambos vértices que
+                //componen la arista, lo que corresponde al costo entre ambos
+                //vértices*/
+                float costo = calcularDistancia(v1, v2);
+
+                /*Otra impresión de verificación*/
+                //std::cout<<"Distancia calculada (peso) entre vértices"<<indice1<<" y "<<indice2<<": "<<costo<<"\n";
+
+                /*Se revisa que no existan duplicados recoriendo el conjunto
+                //de aristas con .find*/
+                if (aristasUnicas.find(aristaNormalizada) == aristasUnicas.end()) {
+                    
+                    /*Se ingresa la arista no dirigida con su respectivo costo*/
+                    if (grafo.insertarAristaNoDirigida(v1, v2, costo)) { 
+
+                        //std::cout<<"Arista no dirigida agregada entre vértices "<<indice1<<" y "<<indice2<<std::endl;
+
+                        /*Se marca que ya se insertó la arista para no repetir más*/
+                        aristasUnicas.insert(aristaNormalizada); 
+                    }else{
+                        std::cerr<<"Error al insertar arista entre vértices "<<indice1<<" y "<<indice2<<std::endl;
+                    }
+                } else {
+                    //std::cout<<"Arista duplicada entre vértices "<<indice1<<" y "<<indice2<<", no agregada.\n";
+                }
+            }
+        }
+
+        std::cout<<std::endl;
+
+        /*Por cuestiones de sobrecarga de operador, se busca cual índice
+        //le pertenece a los vértices que se ingresaron con parámetros
+        //para hacer exitosa la búsqueda dentro de las otras funciones*/
+        int indicei1;
+
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            if (vertices[i] == i1) { 
+                indicei1 = i;
+            }
+        }
+
+        i1.fijarIndiceVer(indicei1);
+
+        /*De acá a adelante se intenta buscar el PRIMER punto más cercano al centroide anteriormente declarado*/
+
+        float distanciaMinima = std::numeric_limits<float>::max();
+        Vertice verticeMasCercano;
+
+        /*Se recorren todos los vértices para obtener el más cercano*/
+        for (Vertice& vertice : grafo.getVertices()){
+            /*Se calcula la distancia y se va cambiando el vértice más
+            //cercano si aparece uno con menor distancia*/
+            float distancia = calcularDistancia(centroide, vertice);
+            if (distancia < distanciaMinima && !(vertice == centroide)) {
+                distanciaMinima = distancia;
+                verticeMasCercano = vertice;
+            }
+        }
+
+        /*Se inserta ya la arista al punto más cercano DIFERENTE A SI MISMO*/
+        grafo.insertarAristaNoDirigida(centroide, verticeMasCercano, distanciaMinima); 
+        grafo.imprimir();
+
+        /*Y se utiliza el algoritmo de Dijkstra usado anteriormente*/
+        grafo.algoritmoDijkstraProyecto(i1, centroide);
+
     }
 
     //////////////////////////////////FUNCIONES AUXILIARES///////////////////////////////

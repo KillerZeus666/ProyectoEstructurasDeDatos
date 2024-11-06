@@ -10,21 +10,21 @@ Vertice::Vertice() {
     indiceVer = 0;
 }
 //Constructor con parametros
-Vertice::Vertice(int x, int y, int z){
+Vertice::Vertice(float x, float y, float z){
         this->x = x;
         this->y = y;
         this->z = z;   
     }
 // Getters
- int Vertice::obtenerX() {
+ float Vertice::obtenerX() {
     return x;
 }
 
- int Vertice::obtenerY() {
+ float Vertice::obtenerY() {
     return y;
 }
 
- int Vertice::obtenerZ() {
+ float Vertice::obtenerZ() {
     return z;
 }
 
@@ -33,19 +33,19 @@ Vertice::Vertice(int x, int y, int z){
 }
 
 // Setters
-void Vertice::fijarX( int x) {
+void Vertice::fijarX( float x) {
     this->x = x;
 }
 
-void Vertice::fijarY( int y) {
+void Vertice::fijarY( float y) {
     this->y = y;
 }
 
-void Vertice::fijarZ( int z) {
+void Vertice::fijarZ( float z) {
     this->z = z;
 }
 
-void Vertice::fijarIndiceVer( int index) {
+void Vertice::fijarIndiceVer(int index) {
     this->indiceVer = index;
 }
 
@@ -73,8 +73,6 @@ std::vector<Vertice> Vertice::calcularEsquinasCaja( int xmin,  int xmax,  int ym
 bool operator==(const Vertice& v1, const Vertice& v2) {
     return  (v1.x == v2.x) &&(v1.y == v2.y) && (v1.z == v2.z);
 }
-
-
 
 std::ostream& operator<<(std::ostream& os, const Vertice& vertice) {
     os << "Indice: " << vertice.indiceVer << ", Coordenadas: (" 
